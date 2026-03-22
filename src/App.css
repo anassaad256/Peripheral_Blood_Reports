@@ -113,6 +113,28 @@
   margin-bottom: 6px;
 }
 
+.lineage-pair-block {
+  margin-bottom: 6px;
+}
+
+.lineage-pair-row {
+  display: flex;
+  gap: 20px;
+}
+
+.lineage-pair-row label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.lineage-pair-row label.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .qualifier-controls {
   display: flex;
   align-items: center;
@@ -172,6 +194,25 @@
 
 .other-input {
   margin-top: 6px !important;
+}
+
+.amount-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.amount-option {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.amount-inline-input {
+  margin-left: 24px;
+  width: calc(100% - 24px) !important;
 }
 
 .btn-add {

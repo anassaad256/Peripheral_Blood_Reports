@@ -1,4 +1,5 @@
-import type { AbnormalPopulationsGroup, AmountType } from '../types';
+import { useState } from 'react';
+import type { AbnormalPopulationsGroup } from '../types';
 import type { ReportAction } from '../hooks/useReportState';
 
 interface Props {
@@ -8,6 +9,94 @@ interface Props {
 
 const QUALITATIVE_AMOUNTS = ['rare', 'few', 'occasional', 'increased'];
 const POPULATION_TYPES = ['blasts', 'atypical lymphocytes', 'blastoid forms', 'immature forms'];
+
+function AmountPicker({
+  entry,
+  index,
+  dispatch,
+}: {
+  entry: { amountType: string; amountValue: string };
+  index: number;
+  dispatch: React.Dispatch<ReportAction>;
+}) {
+  const [showNumericInput, setShowNumericInput] = useState(entry.amountType === 'numeric');
+  const [showFreetextInput, setShowFreetextInput] = useState(entry.amountType === 'freetext');
+
+  const isQualitativeSelected = entry.amountType === 'qualitative' && QUALITATIVE_AMOUNTS.includes(entry.amountValue);
+  const selectedQualitative = isQualitativeSelected ? entry.amountValue : null;
+
+  function selectQualitative(val: string) {
+    setShowNumericInput(false);
+    setShowFreetextInput(false);
+    dispatch({ type: 'SET_ABNORMAL_AMOUNT_TYPE', index, amountType: 'qualitative' });
+    // Need to set value after type change (type change clears value)
+    setTimeout(() => dispatch({ type: 'SET_ABNORMAL_AMOUNT_VALUE', index, value: val }), 0);
+  }
+
+  function selectNumeric() {
+    setShowNumericInput(true);
+    setShowFreetextInput(false);
+    dispatch({ type: 'SET_ABNORMAL_AMOUNT_TYPE', index, amountType: 'numeric' });
+  }
+
+  function selectFreetext() {
+    setShowNumericInput(false);
+    setShowFreetextInput(true);
+    dispatch({ type: 'SET_ABNORMAL_AMOUNT_TYPE', index, amountType: 'freetext' });
+  }
+
+  return (
+    <div className="amount-picker">
+      {QUALITATIVE_AMOUNTS.map((a) => (
+        <label key={a} className="amount-option">
+          <input
+            type="radio"
+            name={`amount-${index}`}
+            checked={selectedQualitative === a}
+            onChange={() => selectQualitative(a)}
+          />
+          {a.charAt(0).toUpperCase() + a.slice(1)}
+        </label>
+      ))}
+      <label className="amount-option">
+        <input
+          type="radio"
+          name={`amount-${index}`}
+          checked={entry.amountType === 'numeric'}
+          onChange={selectNumeric}
+        />
+        Numeric (%)
+      </label>
+      {showNumericInput && entry.amountType === 'numeric' && (
+        <input
+          type="text"
+          className="amount-inline-input"
+          value={entry.amountValue}
+          placeholder="e.g. 4-5"
+          onChange={(e) => dispatch({ type: 'SET_ABNORMAL_AMOUNT_VALUE', index, value: e.target.value })}
+        />
+      )}
+      <label className="amount-option">
+        <input
+          type="radio"
+          name={`amount-${index}`}
+          checked={entry.amountType === 'freetext'}
+          onChange={selectFreetext}
+        />
+        Free text
+      </label>
+      {showFreetextInput && entry.amountType === 'freetext' && (
+        <input
+          type="text"
+          className="amount-inline-input"
+          value={entry.amountValue}
+          placeholder="Free text amount"
+          onChange={(e) => dispatch({ type: 'SET_ABNORMAL_AMOUNT_VALUE', index, value: e.target.value })}
+        />
+      )}
+    </div>
+  );
+}
 
 export function AbnormalPopGroup({ group, dispatch }: Props) {
   return (
@@ -28,48 +117,8 @@ export function AbnormalPopGroup({ group, dispatch }: Props) {
           </div>
 
           <div className="sub-group">
-            <label className="sub-label">Amount type</label>
-            <div className="radio-row">
-              {(['qualitative', 'numeric', 'freetext'] as AmountType[]).map((at) => (
-                <label key={at}>
-                  <input
-                    type="radio"
-                    name={`amount-type-${index}`}
-                    checked={entry.amountType === at}
-                    onChange={() => dispatch({ type: 'SET_ABNORMAL_AMOUNT_TYPE', index, amountType: at })}
-                  />
-                  {at === 'freetext' ? 'Free text' : at.charAt(0).toUpperCase() + at.slice(1)}
-                </label>
-              ))}
-            </div>
-          </div>
-
-          <div className="sub-group">
             <label className="sub-label">Amount</label>
-            {entry.amountType === 'qualitative' ? (
-              <select
-                value={entry.amountValue}
-                onChange={(e) =>
-                  dispatch({ type: 'SET_ABNORMAL_AMOUNT_VALUE', index, value: e.target.value })
-                }
-              >
-                <option value="">Select amount</option>
-                {QUALITATIVE_AMOUNTS.map((a) => (
-                  <option key={a} value={a}>
-                    {a.charAt(0).toUpperCase() + a.slice(1)}
-                  </option>
-                ))}
-              </select>
-            ) : (
-              <input
-                type="text"
-                value={entry.amountValue}
-                placeholder={entry.amountType === 'numeric' ? 'e.g. 4-5' : 'Free text amount'}
-                onChange={(e) =>
-                  dispatch({ type: 'SET_ABNORMAL_AMOUNT_VALUE', index, value: e.target.value })
-                }
-              />
-            )}
+            <AmountPicker entry={entry} index={index} dispatch={dispatch} />
           </div>
 
           <div className="sub-group">
@@ -93,23 +142,11 @@ export function AbnormalPopGroup({ group, dispatch }: Props) {
               ))}
               <option value="__other">Other (free text)</option>
             </select>
-            {!POPULATION_TYPES.includes(entry.populationType) && entry.populationType !== '' && (
+            {!POPULATION_TYPES.includes(entry.populationType) && (
               <input
                 type="text"
                 className="other-input"
                 value={entry.populationType}
-                placeholder="Enter population type"
-                onChange={(e) =>
-                  dispatch({ type: 'SET_ABNORMAL_POPULATION_TYPE', index, value: e.target.value })
-                }
-              />
-            )}
-            {/* Show free text input when "Other" is selected and current value is empty */}
-            {!POPULATION_TYPES.includes(entry.populationType) && entry.populationType === '' && (
-              <input
-                type="text"
-                className="other-input"
-                value=""
                 placeholder="Enter population type"
                 onChange={(e) =>
                   dispatch({ type: 'SET_ABNORMAL_POPULATION_TYPE', index, value: e.target.value })
