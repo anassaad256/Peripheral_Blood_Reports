@@ -1,0 +1,279 @@
+.app {
+  padding-bottom: 40px;
+}
+
+.app-header {
+  text-align: center;
+  padding: 24px 0 8px;
+  border-bottom: 2px solid var(--border);
+  margin-bottom: 24px;
+}
+
+.app-header h1 {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-h);
+  margin: 0;
+}
+
+.form-group {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 16px 20px;
+  margin-bottom: 16px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.form-group legend {
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--text-h);
+  padding: 0 8px;
+}
+
+.sub-group {
+  margin-bottom: 12px;
+}
+
+.sub-label {
+  display: block;
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--text);
+  margin-bottom: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.field {
+  margin-bottom: 10px;
+}
+
+.field label {
+  display: block;
+  font-weight: 500;
+  font-size: 13px;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+.field input,
+.field select {
+  width: 100%;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+  background: var(--surface);
+  color: var(--text-h);
+}
+
+.field input:focus,
+.field select:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+}
+
+.radio-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.radio-row label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.checkbox-column {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.checkbox-column label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.checkbox-column label.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.differential-row {
+  margin-bottom: 6px;
+}
+
+.qualifier-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-left: 24px;
+  margin-top: 2px;
+  padding: 4px 8px;
+  background: #f3f4f6;
+  border-radius: 4px;
+  font-size: 13px;
+}
+
+.qualifier-controls label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+}
+
+.qualifier-required {
+  color: var(--warning);
+}
+
+.validation-hint {
+  font-size: 12px;
+  color: var(--danger);
+  font-style: italic;
+}
+
+.abnormal-entry {
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 10px;
+  background: #fafafa;
+}
+
+.entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.abnormal-entry select,
+.abnormal-entry input[type="text"] {
+  width: 100%;
+  padding: 6px 10px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 14px;
+  box-sizing: border-box;
+  margin-top: 4px;
+}
+
+.other-input {
+  margin-top: 6px !important;
+}
+
+.btn-add {
+  background: none;
+  border: 1px dashed var(--accent);
+  color: var(--accent);
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  width: 100%;
+}
+
+.btn-add:hover {
+  background: rgba(37, 99, 235, 0.05);
+}
+
+.btn-remove {
+  background: none;
+  border: none;
+  color: var(--danger);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 2px 6px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin: 24px 0;
+}
+
+.btn-generate {
+  padding: 10px 24px;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 15px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.btn-generate:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.btn-generate:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.btn-reset {
+  padding: 10px 24px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.btn-reset:hover {
+  background: #f3f4f6;
+}
+
+.report-preview {
+  border: 2px solid var(--success);
+  border-radius: 8px;
+  padding: 20px;
+  background: var(--surface);
+}
+
+.report-preview h2 {
+  margin: 0 0 12px;
+  font-size: 18px;
+  color: var(--success);
+}
+
+.report-output {
+  font-family: 'Courier New', monospace;
+  font-size: 14px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  background: #f9fafb;
+  padding: 16px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  margin: 0 0 12px;
+}
+
+.btn-copy {
+  padding: 6px 16px;
+  background: none;
+  border: 1px solid var(--success);
+  color: var(--success);
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.btn-copy:hover {
+  background: rgba(5, 150, 105, 0.05);
+}
