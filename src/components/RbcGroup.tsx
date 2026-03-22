@@ -7,20 +7,17 @@ interface Props {
 }
 
 const STATUS_OPTIONS: { value: RbcStatus; label: string }[] = [
-  { value: null, label: 'None' },
   { value: 'anemia', label: 'Anemia' },
   { value: 'polycythemia', label: 'Polycythemia' },
 ];
 
 const SIZE_OPTIONS: { value: RbcSize; label: string }[] = [
-  { value: null, label: 'None' },
   { value: 'microcytic', label: 'Microcytic' },
   { value: 'normocytic', label: 'Normocytic' },
   { value: 'macrocytic', label: 'Macrocytic' },
 ];
 
 const CHROMIA_OPTIONS: { value: RbcChromia; label: string }[] = [
-  { value: null, label: 'None' },
   { value: 'hypochromic', label: 'Hypochromic' },
   { value: 'normochromic', label: 'Normochromic' },
   { value: 'hyperchromic', label: 'Hyperchromic' },
@@ -49,7 +46,12 @@ export function RbcGroup({ rbc, dispatch }: Props) {
                 type="radio"
                 name="rbc-status"
                 checked={rbc.status === opt.value}
-                onChange={() => dispatch({ type: 'SET_RBC_STATUS', value: opt.value })}
+                onChange={() =>
+                  dispatch({ type: 'SET_RBC_STATUS', value: rbc.status === opt.value ? null : opt.value })
+                }
+                onClick={() => {
+                  if (rbc.status === opt.value) dispatch({ type: 'SET_RBC_STATUS', value: null });
+                }}
               />
               {opt.label}
             </label>
@@ -66,7 +68,12 @@ export function RbcGroup({ rbc, dispatch }: Props) {
                 type="radio"
                 name="rbc-size"
                 checked={rbc.size === opt.value}
-                onChange={() => dispatch({ type: 'SET_RBC_SIZE', value: opt.value })}
+                onChange={() =>
+                  dispatch({ type: 'SET_RBC_SIZE', value: rbc.size === opt.value ? null : opt.value })
+                }
+                onClick={() => {
+                  if (rbc.size === opt.value) dispatch({ type: 'SET_RBC_SIZE', value: null });
+                }}
               />
               {opt.label}
             </label>
@@ -83,7 +90,12 @@ export function RbcGroup({ rbc, dispatch }: Props) {
                 type="radio"
                 name="rbc-chromia"
                 checked={rbc.chromia === opt.value}
-                onChange={() => dispatch({ type: 'SET_RBC_CHROMIA', value: opt.value })}
+                onChange={() =>
+                  dispatch({ type: 'SET_RBC_CHROMIA', value: rbc.chromia === opt.value ? null : opt.value })
+                }
+                onClick={() => {
+                  if (rbc.chromia === opt.value) dispatch({ type: 'SET_RBC_CHROMIA', value: null });
+                }}
               />
               {opt.label}
             </label>

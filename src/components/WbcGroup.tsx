@@ -69,18 +69,81 @@ export function WbcGroup({ wbc, dispatch }: Props) {
       <div className="sub-group">
         <label className="sub-label">Differential abnormalities</label>
         <div className="checkbox-column">
-          {DIFFERENTIAL_OPTIONS.map((opt) => {
+          {/* Lineage pairs rendered on same line */}
+          {Object.entries(LINEAGE_GROUPS).map(([lineage, types]) => {
+            const opts = types.map((t) => DIFFERENTIAL_OPTIONS.find((o) => o.type === t)!);
+            return (
+              <div key={lineage} className="lineage-pair-block">
+                <div className="lineage-pair-row">
+                  {opts.map((opt) => {
+                    const disabled = isDiffDisabled(opt.type);
+                    const isSelected = selectedTypes.has(opt.type);
+                    return (
+                      <label key={opt.type} className={disabled ? 'disabled' : ''}>
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          disabled={disabled}
+                          onChange={() => dispatch({ type: 'TOGGLE_DIFFERENTIAL', diffType: opt.type })}
+                        />
+                        {opt.label}
+                      </label>
+                    );
+                  })}
+                </div>
+                {opts.map((opt) => {
+                  const isSelected = selectedTypes.has(opt.type);
+                  const diff = wbc.differentials.find((d) => d.type === opt.type);
+                  if (!isSelected || !diff) return null;
+                  return (
+                    <div key={opt.type} className="qualifier-controls">
+                      <label className={!diff.absolute && !diff.relative ? 'qualifier-required' : ''}>
+                        <input
+                          type="checkbox"
+                          checked={diff.absolute}
+                          onChange={() =>
+                            dispatch({
+                              type: 'TOGGLE_DIFFERENTIAL_QUALIFIER',
+                              diffType: opt.type,
+                              qualifier: 'absolute',
+                            })
+                          }
+                        />
+                        Absolute
+                      </label>
+                      <label className={!diff.absolute && !diff.relative ? 'qualifier-required' : ''}>
+                        <input
+                          type="checkbox"
+                          checked={diff.relative}
+                          onChange={() =>
+                            dispatch({
+                              type: 'TOGGLE_DIFFERENTIAL_QUALIFIER',
+                              diffType: opt.type,
+                              qualifier: 'relative',
+                            })
+                          }
+                        />
+                        Relative
+                      </label>
+                      {!diff.absolute && !diff.relative && (
+                        <span className="validation-hint">Select at least one qualifier</span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            );
+          })}
+          {/* Standalone differentials */}
+          {DIFFERENTIAL_OPTIONS.filter((opt) => !opt.group).map((opt) => {
             const isSelected = selectedTypes.has(opt.type);
-            const disabled = isDiffDisabled(opt.type);
             const diff = wbc.differentials.find((d) => d.type === opt.type);
-
             return (
               <div key={opt.type} className="differential-row">
-                <label className={disabled ? 'disabled' : ''}>
+                <label>
                   <input
                     type="checkbox"
                     checked={isSelected}
-                    disabled={disabled}
                     onChange={() => dispatch({ type: 'TOGGLE_DIFFERENTIAL', diffType: opt.type })}
                   />
                   {opt.label}
