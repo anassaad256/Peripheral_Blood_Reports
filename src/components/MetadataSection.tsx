@@ -9,10 +9,6 @@ interface Props {
 export function MetadataSection({ metadata, dispatch }: Props) {
   return (
     <section>
-      <div className="page-title">
-        <h2>New Smear Examination</h2>
-        <p>Complete clinical findings for systematic analysis.</p>
-      </div>
       <div className="metadata-grid" style={{ marginBottom: 20 }}>
         <div className="field">
           <label htmlFor="date">Date of Analysis</label>
