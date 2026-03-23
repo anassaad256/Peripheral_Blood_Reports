@@ -44,11 +44,14 @@ export function WbcGroup({ wbc, dispatch }: Props) {
   }
 
   return (
-    <fieldset className="form-group">
-      <legend>WBC</legend>
+    <section className="form-group">
+      <div className="section-header">
+        <span className="material-symbols-outlined">biotech</span>
+        <h2>White Blood Cell Differential</h2>
+      </div>
 
       <div className="sub-group">
-        <label className="sub-label">Count category</label>
+        <label className="sub-label">WBC Count Estimate</label>
         <div className="radio-row">
           {COUNT_OPTIONS.map((opt) => (
             <label key={String(opt.value)}>
@@ -70,7 +73,7 @@ export function WbcGroup({ wbc, dispatch }: Props) {
       </div>
 
       <div className="sub-group">
-        <label className="sub-label">Differential abnormalities</label>
+        <label className="sub-label">Differential Abnormalities &amp; Qualifiers</label>
         <div className="checkbox-column">
           {/* Lineage pairs rendered on same line */}
           {Object.entries(LINEAGE_GROUPS).map(([lineage, types]) => {
@@ -191,6 +194,6 @@ export function WbcGroup({ wbc, dispatch }: Props) {
           })}
         </div>
       </div>
-    </fieldset>
+    </section>
   );
 }

@@ -100,8 +100,21 @@ function AmountPicker({
 
 export function AbnormalPopGroup({ group, dispatch }: Props) {
   return (
-    <fieldset className="form-group">
-      <legend>Abnormal populations</legend>
+    <section className="form-group">
+      <div className="section-header-spread">
+        <div className="section-header-left">
+          <span className="material-symbols-outlined" style={{ color: 'var(--primary)' }}>groups</span>
+          <h2 style={{ fontSize: 19, fontWeight: 700, margin: 0 }}>Abnormal Populations</h2>
+        </div>
+        <button
+          type="button"
+          className="btn-add"
+          style={{ width: 'auto', border: 'none', padding: '8px 16px' }}
+          onClick={() => dispatch({ type: 'ADD_ABNORMAL_ENTRY' })}
+        >
+          + Add Entry
+        </button>
+      </div>
 
       {group.entries.map((entry, index) => (
         <div key={index} className="abnormal-entry">
@@ -157,13 +170,15 @@ export function AbnormalPopGroup({ group, dispatch }: Props) {
         </div>
       ))}
 
-      <button
-        type="button"
-        className="btn-add"
-        onClick={() => dispatch({ type: 'ADD_ABNORMAL_ENTRY' })}
-      >
-        + Add entry
-      </button>
-    </fieldset>
+      {group.entries.length === 0 && (
+        <button
+          type="button"
+          className="btn-add"
+          onClick={() => dispatch({ type: 'ADD_ABNORMAL_ENTRY' })}
+        >
+          + Add entry
+        </button>
+      )}
+    </section>
   );
 }

@@ -9,20 +9,34 @@ interface Props {
 
 export function InterpretationGroup({ interpretations, dispatch }: Props) {
   return (
-    <fieldset className="form-group">
-      <legend>Interpretation / Disclosures</legend>
-      <div className="checkbox-column">
-        {INTERPRETATION_ORDER.map((key: InterpretationKey) => (
-          <label key={key} title={INTERPRETATION_STATEMENTS[key]}>
-            <input
-              type="checkbox"
-              checked={interpretations.selected.includes(key)}
-              onChange={() => dispatch({ type: 'TOGGLE_INTERPRETATION', key })}
-            />
-            {INTERPRETATION_LABELS[key]}
-          </label>
-        ))}
+    <section className="form-group">
+      <div className="section-header">
+        <span className="material-symbols-outlined">rate_review</span>
+        <h2>Interpretation &amp; Disclosures</h2>
       </div>
-    </fieldset>
+
+      <div className="sub-group">
+        <label className="sub-label">Predefined Statements</label>
+        <div className="interp-chips">
+          {INTERPRETATION_ORDER.map((key: InterpretationKey) => {
+            const isSelected = interpretations.selected.includes(key);
+            return (
+              <label
+                key={key}
+                className={`interp-chip ${isSelected ? 'selected' : ''}`}
+                title={INTERPRETATION_STATEMENTS[key]}
+              >
+                <input
+                  type="checkbox"
+                  checked={isSelected}
+                  onChange={() => dispatch({ type: 'TOGGLE_INTERPRETATION', key })}
+                />
+                {INTERPRETATION_LABELS[key]}
+              </label>
+            );
+          })}
+        </div>
+      </div>
+    </section>
   );
 }
