@@ -1,6 +1,6 @@
 /* ── App shell ─────────────────────────────────── */
 .app {
-  padding-bottom: 120px; /* room for fixed footer */
+  padding-bottom: 40px;
 }
 
 /* ── Header ───────────────────────────────────── */
@@ -540,6 +540,25 @@
   margin-top: 8px !important;
 }
 
+/* ── Abnormal entry side-by-side columns ──────── */
+.abnormal-entry-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 600px) {
+  .abnormal-entry-columns {
+    grid-template-columns: 1fr;
+  }
+}
+
+.population-picker {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
 .amount-picker {
   display: flex;
   flex-direction: column;
@@ -671,22 +690,13 @@
   display: none;
 }
 
-/* ── Fixed footer action bar ──────────────────── */
+/* ── Action buttons ───────────────────────────── */
 .form-actions {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 40;
   display: flex;
   justify-content: flex-end;
   align-items: center;
   gap: 12px;
-  padding: 16px 32px;
-  background: rgba(255, 255, 255, 0.92);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid rgba(191, 199, 210, 0.35);
+  padding: 20px 0;
 }
 
 .btn-generate {

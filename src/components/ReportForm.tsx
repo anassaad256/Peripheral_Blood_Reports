@@ -44,8 +44,6 @@ export function ReportForm() {
         </div>
       )}
 
-      <ReportPreview reportText={reportText} />
-
       <div className="form-actions">
         <button type="button" className="btn-reset" onClick={handleReset}>
           Reset
@@ -60,6 +58,8 @@ export function ReportForm() {
           Generate Report
         </button>
       </div>
+
+      <ReportPreview reportText={reportText} />
     </div>
   );
 }
