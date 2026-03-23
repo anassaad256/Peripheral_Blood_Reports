@@ -7,9 +7,7 @@ interface Props {
 }
 
 const COUNT_OPTIONS: { value: WbcCountCategory; label: string }[] = [
-  { value: null, label: 'None' },
   { value: 'leukocytosis', label: 'Leukocytosis' },
-  { value: 'normal_wbc_count', label: 'Normal WBC count' },
   { value: 'leukopenia', label: 'Leukopenia' },
 ];
 
@@ -58,7 +56,12 @@ export function WbcGroup({ wbc, dispatch }: Props) {
                 type="radio"
                 name="wbc-count"
                 checked={wbc.countCategory === opt.value}
-                onChange={() => dispatch({ type: 'SET_WBC_COUNT', value: opt.value })}
+                onChange={() =>
+                  dispatch({ type: 'SET_WBC_COUNT', value: wbc.countCategory === opt.value ? null : opt.value })
+                }
+                onClick={() => {
+                  if (wbc.countCategory === opt.value) dispatch({ type: 'SET_WBC_COUNT', value: null });
+                }}
               />
               {opt.label}
             </label>
