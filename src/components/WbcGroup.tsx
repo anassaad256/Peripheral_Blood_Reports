@@ -1,9 +1,9 @@
 import type { WbcGroup as WbcGroupType, WbcCountCategory, DifferentialType } from '../types';
-import type { ReportAction } from '../hooks/useReportState';
+import type { SessionAction } from '../hooks/useSession';
 
 interface Props {
   wbc: WbcGroupType;
-  dispatch: React.Dispatch<ReportAction>;
+  dispatch: React.Dispatch<SessionAction>;
 }
 
 const COUNT_OPTIONS: { value: WbcCountCategory; label: string }[] = [

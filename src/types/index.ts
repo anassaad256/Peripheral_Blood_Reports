@@ -6,3 +6,4 @@ export * from './abnormalPopulations';
 export * from './platelets';
 export * from './interpretations';
 export * from './report';
+export * from './session';

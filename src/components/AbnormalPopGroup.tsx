@@ -1,10 +1,10 @@
 import { useState } from 'react';
 import type { AbnormalPopulationsGroup } from '../types';
-import type { ReportAction } from '../hooks/useReportState';
+import type { SessionAction } from '../hooks/useSession';
 
 interface Props {
   group: AbnormalPopulationsGroup;
-  dispatch: React.Dispatch<ReportAction>;
+  dispatch: React.Dispatch<SessionAction>;
 }
 
 const QUALITATIVE_AMOUNTS = ['rare', 'few', 'occasional', 'increased'];
@@ -17,7 +17,7 @@ function AmountPicker({
 }: {
   entry: { amountType: string; amountValue: string };
   index: number;
-  dispatch: React.Dispatch<ReportAction>;
+  dispatch: React.Dispatch<SessionAction>;
 }) {
   const [showNumericInput, setShowNumericInput] = useState(entry.amountType === 'numeric');
   const [showFreetextInput, setShowFreetextInput] = useState(entry.amountType === 'freetext');
@@ -104,7 +104,7 @@ function PopulationPicker({
 }: {
   entry: { populationType: string };
   index: number;
-  dispatch: React.Dispatch<ReportAction>;
+  dispatch: React.Dispatch<SessionAction>;
 }) {
   const isOther = entry.populationType !== '' && !POPULATION_TYPES.includes(entry.populationType);
   const isOtherSelected = isOther || (entry.populationType === '' && false);

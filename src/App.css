@@ -834,3 +834,373 @@
 .btn-print:hover {
   background: rgba(0, 99, 152, 0.06);
 }
+
+/* ── Session layout ───────────────────────────── */
+.session-layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  gap: 24px;
+  padding-top: 72px;
+  min-height: calc(100vh - 72px);
+}
+
+@media (max-width: 768px) {
+  .session-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.session-main {
+  min-width: 0;
+}
+
+/* ── Session setup bar ────────────────────────── */
+.session-setup {
+  margin-bottom: 20px;
+  background: var(--surface-low);
+  padding: 20px 24px;
+  border-radius: 16px;
+}
+
+.session-setup-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+}
+
+@media (max-width: 768px) {
+  .session-setup-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ── Case sidebar ─────────────────────────────── */
+.case-sidebar {
+  position: sticky;
+  top: 72px;
+  height: calc(100vh - 72px);
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-low);
+  border-radius: 16px;
+  padding: 16px;
+  overflow: hidden;
+}
+
+.sidebar-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--outline-variant);
+}
+
+.sidebar-header h3 {
+  font-size: 14px;
+  font-weight: 700;
+  margin: 0;
+  color: var(--on-surface);
+}
+
+.btn-sidebar-add {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border: none;
+  background: var(--primary);
+  color: var(--on-primary);
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-sidebar-add:hover {
+  background: var(--primary-hover);
+}
+
+.case-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.case-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  transition: all 0.15s;
+  color: var(--on-surface-variant);
+}
+
+.case-item:hover {
+  background: var(--surface-container);
+}
+
+.case-item.active {
+  background: var(--surface-lowest);
+  color: var(--primary);
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+}
+
+.case-item-info {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.case-item-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.case-item-badge {
+  color: var(--success);
+  display: flex;
+  flex-shrink: 0;
+}
+
+.case-item-delete {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background: none;
+  color: var(--outline);
+  border-radius: 6px;
+  cursor: pointer;
+  opacity: 0;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.case-item:hover .case-item-delete {
+  opacity: 1;
+}
+
+.case-item-delete:hover {
+  background: rgba(186, 26, 26, 0.1);
+  color: var(--error);
+}
+
+.sidebar-footer {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--outline-variant);
+}
+
+.btn-end-session {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 12px;
+  border: 1px dashed var(--primary);
+  background: none;
+  color: var(--primary);
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-end-session:hover {
+  background: rgba(0, 99, 152, 0.04);
+}
+
+/* ── Add to Report button ─────────────────────── */
+.btn-add-report {
+  padding: 8px 20px;
+  background: none;
+  border: 1px solid var(--primary);
+  color: var(--primary);
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.btn-add-report:hover {
+  background: rgba(0, 99, 152, 0.06);
+}
+
+.btn-added {
+  background: var(--success);
+  color: white;
+  border-color: var(--success);
+}
+
+.btn-added:hover {
+  background: var(--success);
+}
+
+/* ── Resume prompt ────────────────────────────── */
+.resume-prompt {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 100px);
+  padding-top: 72px;
+}
+
+.resume-card {
+  text-align: center;
+  background: var(--surface-lowest);
+  border: 1px solid rgba(191, 199, 210, 0.2);
+  border-radius: 20px;
+  padding: 48px 56px;
+  box-shadow: var(--shadow-md);
+  max-width: 420px;
+}
+
+.resume-icon {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--primary-container);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  color: var(--on-primary-container);
+}
+
+.resume-card h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin: 0 0 8px;
+}
+
+.resume-card p {
+  color: var(--on-surface-variant);
+  font-size: 14px;
+  margin: 0 0 24px;
+}
+
+.resume-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.resume-actions .btn-generate,
+.resume-actions .btn-reset {
+  width: 100%;
+  justify-content: center;
+}
+
+/* ── Session summary ──────────────────────────── */
+.session-summary {
+  padding-top: 72px;
+}
+
+.summary-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.summary-header h2 {
+  font-size: 24px;
+  font-weight: 800;
+  margin: 0;
+}
+
+.summary-meta {
+  font-size: 14px;
+  color: var(--on-surface-variant);
+  margin: 4px 0 0;
+}
+
+.summary-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.summary-actions .btn-reset,
+.summary-actions .btn-generate {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.summary-empty {
+  text-align: center;
+  padding: 64px 20px;
+  color: var(--on-surface-variant);
+}
+
+.summary-empty p {
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+.summary-cases {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.summary-case-card {
+  background: var(--surface-lowest);
+  border: 1px solid rgba(191, 199, 210, 0.2);
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+.summary-case-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 20px;
+  background: var(--surface-low);
+  border-bottom: 1px solid rgba(191, 199, 210, 0.15);
+}
+
+.summary-case-number {
+  font-weight: 700;
+  font-size: 13px;
+  color: var(--primary);
+}
+
+.summary-case-id {
+  font-size: 13px;
+  color: var(--on-surface-variant);
+}
+
+.summary-case-report {
+  font-family: 'Courier New', monospace;
+  font-size: 13px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  margin: 0;
+  padding: 20px;
+}
