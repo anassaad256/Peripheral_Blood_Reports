@@ -34,78 +34,83 @@ const ADDITIONAL_CHECKBOXES: { field: 'reticulocytosis' | 'anisocytosis' | 'poik
 
 export function RbcGroup({ rbc, dispatch }: Props) {
   return (
-    <fieldset className="form-group">
-      <legend>RBC</legend>
+    <section className="form-group">
+      <div className="section-header">
+        <span className="material-symbols-outlined">bloodtype</span>
+        <h2>Red Blood Cell Morphology</h2>
+      </div>
 
-      <div className="sub-group">
-        <label className="sub-label">Status</label>
-        <div className="radio-row">
-          {STATUS_OPTIONS.map((opt) => (
-            <label key={String(opt.value)}>
-              <input
-                type="radio"
-                name="rbc-status"
-                checked={rbc.status === opt.value}
-                onChange={() =>
-                  dispatch({ type: 'SET_RBC_STATUS', value: rbc.status === opt.value ? null : opt.value })
-                }
-                onClick={() => {
-                  if (rbc.status === opt.value) dispatch({ type: 'SET_RBC_STATUS', value: null });
-                }}
-              />
-              {opt.label}
-            </label>
-          ))}
+      <div className="rbc-columns">
+        <div className="sub-group">
+          <label className="sub-label">Status</label>
+          <div className="radio-row">
+            {STATUS_OPTIONS.map((opt) => (
+              <label key={String(opt.value)}>
+                <input
+                  type="radio"
+                  name="rbc-status"
+                  checked={rbc.status === opt.value}
+                  onChange={() =>
+                    dispatch({ type: 'SET_RBC_STATUS', value: rbc.status === opt.value ? null : opt.value })
+                  }
+                  onClick={() => {
+                    if (rbc.status === opt.value) dispatch({ type: 'SET_RBC_STATUS', value: null });
+                  }}
+                />
+                {opt.label}
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div className="sub-group">
+          <label className="sub-label">Size (MCV Correlation)</label>
+          <div className="radio-row">
+            {SIZE_OPTIONS.map((opt) => (
+              <label key={String(opt.value)}>
+                <input
+                  type="radio"
+                  name="rbc-size"
+                  checked={rbc.size === opt.value}
+                  onChange={() =>
+                    dispatch({ type: 'SET_RBC_SIZE', value: rbc.size === opt.value ? null : opt.value })
+                  }
+                  onClick={() => {
+                    if (rbc.size === opt.value) dispatch({ type: 'SET_RBC_SIZE', value: null });
+                  }}
+                />
+                {opt.label}
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div className="sub-group">
+          <label className="sub-label">Chromia (MCH Correlation)</label>
+          <div className="radio-row">
+            {CHROMIA_OPTIONS.map((opt) => (
+              <label key={String(opt.value)}>
+                <input
+                  type="radio"
+                  name="rbc-chromia"
+                  checked={rbc.chromia === opt.value}
+                  onChange={() =>
+                    dispatch({ type: 'SET_RBC_CHROMIA', value: rbc.chromia === opt.value ? null : opt.value })
+                  }
+                  onClick={() => {
+                    if (rbc.chromia === opt.value) dispatch({ type: 'SET_RBC_CHROMIA', value: null });
+                  }}
+                />
+                {opt.label}
+              </label>
+            ))}
+          </div>
         </div>
       </div>
 
       <div className="sub-group">
-        <label className="sub-label">Size</label>
-        <div className="radio-row">
-          {SIZE_OPTIONS.map((opt) => (
-            <label key={String(opt.value)}>
-              <input
-                type="radio"
-                name="rbc-size"
-                checked={rbc.size === opt.value}
-                onChange={() =>
-                  dispatch({ type: 'SET_RBC_SIZE', value: rbc.size === opt.value ? null : opt.value })
-                }
-                onClick={() => {
-                  if (rbc.size === opt.value) dispatch({ type: 'SET_RBC_SIZE', value: null });
-                }}
-              />
-              {opt.label}
-            </label>
-          ))}
-        </div>
-      </div>
-
-      <div className="sub-group">
-        <label className="sub-label">Chromia</label>
-        <div className="radio-row">
-          {CHROMIA_OPTIONS.map((opt) => (
-            <label key={String(opt.value)}>
-              <input
-                type="radio"
-                name="rbc-chromia"
-                checked={rbc.chromia === opt.value}
-                onChange={() =>
-                  dispatch({ type: 'SET_RBC_CHROMIA', value: rbc.chromia === opt.value ? null : opt.value })
-                }
-                onClick={() => {
-                  if (rbc.chromia === opt.value) dispatch({ type: 'SET_RBC_CHROMIA', value: null });
-                }}
-              />
-              {opt.label}
-            </label>
-          ))}
-        </div>
-      </div>
-
-      <div className="sub-group">
-        <label className="sub-label">Additional findings</label>
-        <div className="checkbox-column">
+        <label className="sub-label">Additional Findings (Multi-select)</label>
+        <div className="checkbox-grid">
           {ADDITIONAL_CHECKBOXES.map((cb) => (
             <label key={cb.field}>
               <input
@@ -117,17 +122,17 @@ export function RbcGroup({ rbc, dispatch }: Props) {
             </label>
           ))}
         </div>
-        <div className="field">
-          <label htmlFor="rbc-other">Other</label>
+        <div className="field" style={{ marginTop: 12 }}>
           <input
             id="rbc-other"
             type="text"
             value={rbc.additional.otherText}
             onChange={(e) => dispatch({ type: 'SET_RBC_OTHER_TEXT', value: e.target.value })}
-            placeholder="Free text"
+            placeholder="Other RBC findings..."
+            style={{ background: 'var(--surface-lowest)', border: 'none', borderRadius: 12, height: 44, padding: '8px 16px' }}
           />
         </div>
       </div>
-    </fieldset>
+    </section>
   );
 }

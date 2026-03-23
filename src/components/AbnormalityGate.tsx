@@ -7,28 +7,32 @@ interface Props {
 
 export function AbnormalityGate({ value, dispatch }: Props) {
   return (
-    <fieldset className="form-group">
-      <legend>Any abnormalities?</legend>
-      <div className="radio-row">
-        <label>
-          <input
-            type="radio"
-            name="abnormalities"
-            checked={value === true}
-            onChange={() => dispatch({ type: 'SET_HAS_ABNORMALITIES', value: true })}
-          />
-          Yes
-        </label>
-        <label>
-          <input
-            type="radio"
-            name="abnormalities"
-            checked={value === false}
-            onChange={() => dispatch({ type: 'SET_HAS_ABNORMALITIES', value: false })}
-          />
-          No
-        </label>
+    <div className="gate-card">
+      <div className="gate-info">
+        <div className="gate-icon">
+          <span className="material-symbols-outlined">troubleshoot</span>
+        </div>
+        <div className="gate-text">
+          <h2>Morphological Abnormalities?</h2>
+          <p>Gatekeeper for automated versus manual differential reporting.</p>
+        </div>
       </div>
-    </fieldset>
+      <div className="gate-toggle">
+        <button
+          type="button"
+          className={value === true ? 'active' : ''}
+          onClick={() => dispatch({ type: 'SET_HAS_ABNORMALITIES', value: true })}
+        >
+          Yes
+        </button>
+        <button
+          type="button"
+          className={value === false ? 'active' : ''}
+          onClick={() => dispatch({ type: 'SET_HAS_ABNORMALITIES', value: false })}
+        >
+          No
+        </button>
+      </div>
+    </div>
   );
 }

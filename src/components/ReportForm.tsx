@@ -34,31 +34,32 @@ export function ReportForm() {
       <AbnormalityGate value={state.hasAbnormalities} dispatch={dispatch} />
 
       {state.hasAbnormalities === true && (
-        <>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
           <RbcGroup rbc={state.rbc} dispatch={dispatch} />
           <NrbcGroup nrbc={state.nrbc} dispatch={dispatch} />
           <WbcGroup wbc={state.wbc} dispatch={dispatch} />
           <AbnormalPopGroup group={state.abnormalPopulations} dispatch={dispatch} />
           <PlateletGroup platelets={state.platelets} dispatch={dispatch} />
           <InterpretationGroup interpretations={state.interpretations} dispatch={dispatch} />
-        </>
+        </div>
       )}
 
+      <ReportPreview reportText={reportText} />
+
       <div className="form-actions">
+        <button type="button" className="btn-reset" onClick={handleReset}>
+          Reset
+        </button>
         <button
           type="button"
           className="btn-generate"
           disabled={disabled}
           onClick={handleGenerate}
         >
-          Generate report
-        </button>
-        <button type="button" className="btn-reset" onClick={handleReset}>
-          Reset
+          <span className="material-symbols-outlined" style={{ fontSize: 18 }}>description</span>
+          Generate Report
         </button>
       </div>
-
-      <ReportPreview reportText={reportText} />
     </div>
   );
 }

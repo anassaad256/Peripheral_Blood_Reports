@@ -13,52 +13,57 @@ const COUNT_OPTIONS: { value: PlateletCount; label: string }[] = [
 
 export function PlateletGroup({ platelets, dispatch }: Props) {
   return (
-    <fieldset className="form-group">
-      <legend>Platelets</legend>
+    <section className="form-group">
+      <div className="section-header">
+        <span className="material-symbols-outlined">grid_view</span>
+        <h2>Platelet Estimate</h2>
+      </div>
 
-      <div className="sub-group">
-        <label className="sub-label">Count category</label>
-        <div className="radio-row">
-          {COUNT_OPTIONS.map((opt) => (
-            <label key={String(opt.value)}>
+      <div className="platelet-grid">
+        <div>
+          <label className="sub-label">Estimated Count Category</label>
+          <div className="radio-row">
+            {COUNT_OPTIONS.map((opt) => (
+              <label key={String(opt.value)}>
+                <input
+                  type="radio"
+                  name="platelet-count"
+                  checked={platelets.count === opt.value}
+                  onChange={() =>
+                    dispatch({ type: 'SET_PLATELET_COUNT', value: platelets.count === opt.value ? null : opt.value })
+                  }
+                  onClick={() => {
+                    if (platelets.count === opt.value) dispatch({ type: 'SET_PLATELET_COUNT', value: null });
+                  }}
+                />
+                {opt.label}
+              </label>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <label className="sub-label">Morphology Descriptors</label>
+          <div className="checkbox-column">
+            <label>
               <input
-                type="radio"
-                name="platelet-count"
-                checked={platelets.count === opt.value}
-                onChange={() =>
-                  dispatch({ type: 'SET_PLATELET_COUNT', value: platelets.count === opt.value ? null : opt.value })
-                }
-                onClick={() => {
-                  if (platelets.count === opt.value) dispatch({ type: 'SET_PLATELET_COUNT', value: null });
-                }}
+                type="checkbox"
+                checked={platelets.largePlatelets}
+                onChange={() => dispatch({ type: 'TOGGLE_LARGE_PLATELETS' })}
               />
-              {opt.label}
+              Large platelets
             </label>
-          ))}
+            <label>
+              <input
+                type="checkbox"
+                checked={platelets.plateletClumps}
+                onChange={() => dispatch({ type: 'TOGGLE_PLATELET_CLUMPS' })}
+              />
+              Platelet clumps
+            </label>
+          </div>
         </div>
       </div>
-
-      <div className="sub-group">
-        <label className="sub-label">Morphology</label>
-        <div className="checkbox-column">
-          <label>
-            <input
-              type="checkbox"
-              checked={platelets.largePlatelets}
-              onChange={() => dispatch({ type: 'TOGGLE_LARGE_PLATELETS' })}
-            />
-            Large platelets
-          </label>
-          <label>
-            <input
-              type="checkbox"
-              checked={platelets.plateletClumps}
-              onChange={() => dispatch({ type: 'TOGGLE_PLATELET_CLUMPS' })}
-            />
-            Platelet clumps
-          </label>
-        </div>
-      </div>
-    </fieldset>
+    </section>
   );
 }

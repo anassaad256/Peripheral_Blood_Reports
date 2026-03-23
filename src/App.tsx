@@ -5,7 +5,7 @@ function App() {
   return (
     <div className="app">
       <header className="app-header">
-        <h1>Peripheral Blood Smear Report Generator</h1>
+        <h1>SmearAnalyst Pro</h1>
       </header>
       <main>
         <ReportForm />

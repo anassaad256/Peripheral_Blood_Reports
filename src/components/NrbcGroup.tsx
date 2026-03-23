@@ -8,9 +8,12 @@ interface Props {
 
 export function NrbcGroup({ nrbc, dispatch }: Props) {
   return (
-    <fieldset className="form-group">
-      <legend>Nucleated RBC / Left shift</legend>
-      <div className="checkbox-column">
+    <div className="nrbc-grid">
+      <div className="nrbc-card">
+        <h3>
+          <span className="material-symbols-outlined" style={{ color: 'var(--tertiary)' }}>exposure</span>
+          Nucleated RBCs
+        </h3>
         <label>
           <input
             type="checkbox"
@@ -19,15 +22,21 @@ export function NrbcGroup({ nrbc, dispatch }: Props) {
           />
           Increased nucleated RBCs
         </label>
+      </div>
+      <div className="nrbc-card">
+        <h3>
+          <span className="material-symbols-outlined" style={{ color: 'var(--primary)' }}>keyboard_double_arrow_left</span>
+          Granulocytic Left Shift
+        </h3>
         <label>
           <input
             type="checkbox"
             checked={nrbc.leftShift}
             onChange={() => dispatch({ type: 'TOGGLE_LEFT_SHIFT' })}
           />
-          Left shift
+          Left shift present
         </label>
       </div>
-    </fieldset>
+    </div>
   );
 }
