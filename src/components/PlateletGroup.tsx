@@ -7,7 +7,6 @@ interface Props {
 }
 
 const COUNT_OPTIONS: { value: PlateletCount; label: string }[] = [
-  { value: null, label: 'None' },
   { value: 'thrombocytopenia', label: 'Thrombocytopenia' },
   { value: 'thrombocytosis', label: 'Thrombocytosis' },
 ];
@@ -26,7 +25,12 @@ export function PlateletGroup({ platelets, dispatch }: Props) {
                 type="radio"
                 name="platelet-count"
                 checked={platelets.count === opt.value}
-                onChange={() => dispatch({ type: 'SET_PLATELET_COUNT', value: opt.value })}
+                onChange={() =>
+                  dispatch({ type: 'SET_PLATELET_COUNT', value: platelets.count === opt.value ? null : opt.value })
+                }
+                onClick={() => {
+                  if (platelets.count === opt.value) dispatch({ type: 'SET_PLATELET_COUNT', value: null });
+                }}
               />
               {opt.label}
             </label>

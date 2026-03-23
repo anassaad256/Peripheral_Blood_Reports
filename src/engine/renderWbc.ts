@@ -66,18 +66,21 @@ export function renderWbc(wbc: WbcGroup): string {
     return '';
   }
 
-  const countLabel = wbc.countCategory === 'normal_wbc_count'
+  const effectiveCategory = wbc.countCategory ?? (hasDiffs ? 'normal_wbc_count' : null);
+  const countLabel = effectiveCategory === 'normal_wbc_count'
     ? 'normal WBC count'
-    : wbc.countCategory ?? '';
+    : effectiveCategory ?? '';
 
   const sorted = sortDifferentials(validDiffs, wbc.countCategory);
   const diffLabels = sorted.map(renderDifferentialLabel);
   const diffStr = formatList(diffLabels);
 
+  const hasEffectiveCount = effectiveCategory !== null;
+
   let line = '';
-  if (hasCount && hasDiffs) {
+  if (hasEffectiveCount && hasDiffs) {
     line = `${countLabel} with ${diffStr}`;
-  } else if (hasCount) {
+  } else if (hasEffectiveCount) {
     line = countLabel;
   } else {
     line = diffStr;

@@ -305,6 +305,24 @@
   margin: 0 0 12px;
 }
 
+.report-editable {
+  width: 100%;
+  box-sizing: border-box;
+  resize: vertical;
+  min-height: 120px;
+  color: var(--text-h);
+}
+
+.report-editable:focus {
+  outline: 2px solid var(--accent);
+  outline-offset: -1px;
+}
+
+.report-actions {
+  display: flex;
+  gap: 8px;
+}
+
 .btn-copy {
   padding: 6px 16px;
   background: none;
@@ -317,4 +335,27 @@
 
 .btn-copy:hover {
   background: rgba(5, 150, 105, 0.05);
+}
+
+.btn-copied {
+  background: var(--success);
+  color: white;
+}
+
+.btn-copied:hover {
+  background: var(--success);
+}
+
+.btn-print {
+  padding: 6px 16px;
+  background: none;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.btn-print:hover {
+  background: rgba(37, 99, 235, 0.05);
 }

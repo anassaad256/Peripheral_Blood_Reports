@@ -41,7 +41,7 @@ export type ReportAction =
 
 export function createInitialState(): ReportInput {
   return {
-    metadata: { date: '', caseId: '', signingPathologist: '', billingCode1: '', billingCode2: '' },
+    metadata: { date: '', caseId: '', signingPathologist: '', billingCode1: '85060', billingCode2: 'R68.89' },
     hasAbnormalities: null,
     rbc: {
       status: null,

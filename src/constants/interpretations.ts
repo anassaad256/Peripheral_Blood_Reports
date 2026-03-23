@@ -13,15 +13,15 @@ export const INTERPRETATION_STATEMENTS: Record<InterpretationKey, string> = {
 };
 
 export const INTERPRETATION_ORDER: InterpretationKey[] = [
-  'degenerating_specimen',
-  'clinical_correlation',
   'flow',
-  'hematology_consult',
   'reactive',
   'microcytic_anemia',
   'macrocytic_anemia',
   'leukemia',
   'cll',
+  'degenerating_specimen',
+  'clinical_correlation',
+  'hematology_consult',
 ];
 
 export const INTERPRETATION_LABELS: Record<InterpretationKey, string> = {
