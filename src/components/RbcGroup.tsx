@@ -1,9 +1,9 @@
 import type { RbcGroup as RbcGroupType, RbcStatus, RbcSize, RbcChromia } from '../types';
-import type { ReportAction } from '../hooks/useReportState';
+import type { SessionAction } from '../hooks/useSession';
 
 interface Props {
   rbc: RbcGroupType;
-  dispatch: React.Dispatch<ReportAction>;
+  dispatch: React.Dispatch<SessionAction>;
 }
 
 const STATUS_OPTIONS: { value: RbcStatus; label: string }[] = [

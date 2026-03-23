@@ -1,10 +1,10 @@
 import type { InterpretationsGroup, InterpretationKey } from '../types';
-import type { ReportAction } from '../hooks/useReportState';
+import type { SessionAction } from '../hooks/useSession';
 import { INTERPRETATION_ORDER, INTERPRETATION_LABELS, INTERPRETATION_STATEMENTS } from '../constants/interpretations';
 
 interface Props {
   interpretations: InterpretationsGroup;
-  dispatch: React.Dispatch<ReportAction>;
+  dispatch: React.Dispatch<SessionAction>;
 }
 
 export function InterpretationGroup({ interpretations, dispatch }: Props) {

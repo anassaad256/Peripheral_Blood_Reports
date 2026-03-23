@@ -1,4 +1,4 @@
-import { ReportForm } from './components/ReportForm'
+import { SessionManager } from './components/SessionManager'
 import './App.css'
 
 function App() {
@@ -8,7 +8,7 @@ function App() {
         <h1>Peripheral Blood Report Generator</h1>
       </header>
       <main>
-        <ReportForm />
+        <SessionManager />
       </main>
     </div>
   )

@@ -1,8 +1,8 @@
-import type { ReportAction } from '../hooks/useReportState';
+import type { SessionAction } from '../hooks/useSession';
 
 interface Props {
   value: boolean | null;
-  dispatch: React.Dispatch<ReportAction>;
+  dispatch: React.Dispatch<SessionAction>;
 }
 
 export function AbnormalityGate({ value, dispatch }: Props) {

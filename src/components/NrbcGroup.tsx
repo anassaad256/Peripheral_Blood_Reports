@@ -1,9 +1,9 @@
 import type { NrbcGroup as NrbcGroupType } from '../types';
-import type { ReportAction } from '../hooks/useReportState';
+import type { SessionAction } from '../hooks/useSession';
 
 interface Props {
   nrbc: NrbcGroupType;
-  dispatch: React.Dispatch<ReportAction>;
+  dispatch: React.Dispatch<SessionAction>;
 }
 
 export function NrbcGroup({ nrbc, dispatch }: Props) {

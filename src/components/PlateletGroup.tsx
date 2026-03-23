@@ -1,9 +1,9 @@
 import type { PlateletGroup as PlateletGroupType, PlateletCount } from '../types';
-import type { ReportAction } from '../hooks/useReportState';
+import type { SessionAction } from '../hooks/useSession';
 
 interface Props {
   platelets: PlateletGroupType;
-  dispatch: React.Dispatch<ReportAction>;
+  dispatch: React.Dispatch<SessionAction>;
 }
 
 const COUNT_OPTIONS: { value: PlateletCount; label: string }[] = [
