@@ -41,7 +41,7 @@ export type ReportAction =
 
 export function createInitialState(): ReportInput {
   return {
-    metadata: { date: new Date().toISOString().slice(0, 10), caseId: '', signingPathologist: '', billingCode1: '85060', billingCode2: 'R68.89' },
+    metadata: { date: new Date().toLocaleDateString('en-CA', { timeZone: 'America/New_York' }), caseId: '', signingPathologist: '', billingCode1: '85060', billingCode2: 'R68.89' },
     hasAbnormalities: null,
     rbc: {
       status: null,

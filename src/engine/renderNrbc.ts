@@ -8,7 +8,7 @@ export function renderNrbc(nrbc: NrbcGroup): string {
     return 'Increased nucleated RBCs.';
   }
   if (nrbc.leftShift) {
-    return 'Left shift.';
+    return 'Granulocytic left-shift.';
   }
   return '';
 }

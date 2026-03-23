@@ -655,9 +655,15 @@
 
 /* ── Interpretation chips ─────────────────────── */
 .interp-chips {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 8px;
+}
+
+@media (max-width: 600px) {
+  .interp-chips {
+    grid-template-columns: 1fr;
+  }
 }
 
 .interp-chip {
