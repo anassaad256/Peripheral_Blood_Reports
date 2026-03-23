@@ -29,7 +29,6 @@ function AmountPicker({
     setShowNumericInput(false);
     setShowFreetextInput(false);
     dispatch({ type: 'SET_ABNORMAL_AMOUNT_TYPE', index, amountType: 'qualitative' });
-    // Need to set value after type change (type change clears value)
     setTimeout(() => dispatch({ type: 'SET_ABNORMAL_AMOUNT_VALUE', index, value: val }), 0);
   }
 
@@ -98,6 +97,55 @@ function AmountPicker({
   );
 }
 
+function PopulationPicker({
+  entry,
+  index,
+  dispatch,
+}: {
+  entry: { populationType: string };
+  index: number;
+  dispatch: React.Dispatch<ReportAction>;
+}) {
+  const isOther = entry.populationType !== '' && !POPULATION_TYPES.includes(entry.populationType);
+  const isOtherSelected = isOther || (entry.populationType === '' && false);
+
+  return (
+    <div className="population-picker">
+      {POPULATION_TYPES.map((t) => (
+        <label key={t} className="amount-option">
+          <input
+            type="radio"
+            name={`pop-type-${index}`}
+            checked={entry.populationType === t}
+            onChange={() => dispatch({ type: 'SET_ABNORMAL_POPULATION_TYPE', index, value: t })}
+          />
+          {t.charAt(0).toUpperCase() + t.slice(1)}
+        </label>
+      ))}
+      <label className="amount-option">
+        <input
+          type="radio"
+          name={`pop-type-${index}`}
+          checked={isOther || isOtherSelected}
+          onChange={() => dispatch({ type: 'SET_ABNORMAL_POPULATION_TYPE', index, value: '' })}
+        />
+        Other (free text)
+      </label>
+      {(isOther || isOtherSelected) && (
+        <input
+          type="text"
+          className="amount-inline-input"
+          value={entry.populationType}
+          placeholder="Enter population type"
+          onChange={(e) =>
+            dispatch({ type: 'SET_ABNORMAL_POPULATION_TYPE', index, value: e.target.value })
+          }
+        />
+      )}
+    </div>
+  );
+}
+
 export function AbnormalPopGroup({ group, dispatch }: Props) {
   return (
     <section className="form-group">
@@ -129,43 +177,16 @@ export function AbnormalPopGroup({ group, dispatch }: Props) {
             </button>
           </div>
 
-          <div className="sub-group">
-            <label className="sub-label">Amount</label>
-            <AmountPicker entry={entry} index={index} dispatch={dispatch} />
-          </div>
+          <div className="abnormal-entry-columns">
+            <div className="sub-group">
+              <label className="sub-label">Amount</label>
+              <AmountPicker entry={entry} index={index} dispatch={dispatch} />
+            </div>
 
-          <div className="sub-group">
-            <label className="sub-label">Population type</label>
-            <select
-              value={POPULATION_TYPES.includes(entry.populationType) ? entry.populationType : entry.populationType ? '__other' : ''}
-              onChange={(e) => {
-                const val = e.target.value;
-                if (val === '__other') {
-                  dispatch({ type: 'SET_ABNORMAL_POPULATION_TYPE', index, value: '' });
-                } else {
-                  dispatch({ type: 'SET_ABNORMAL_POPULATION_TYPE', index, value: val });
-                }
-              }}
-            >
-              <option value="">Select type</option>
-              {POPULATION_TYPES.map((t) => (
-                <option key={t} value={t}>
-                  {t.charAt(0).toUpperCase() + t.slice(1)}
-                </option>
-              ))}
-              <option value="__other">Other (free text)</option>
-            </select>
-            {!POPULATION_TYPES.includes(entry.populationType) && (
-              <input
-                type="text"
-                className="other-input"
-                value={entry.populationType}
-                placeholder="Enter population type"
-                onChange={(e) =>
-                  dispatch({ type: 'SET_ABNORMAL_POPULATION_TYPE', index, value: e.target.value })
-                }
-              />
-            )}
+            <div className="sub-group">
+              <label className="sub-label">Population Type</label>
+              <PopulationPicker entry={entry} index={index} dispatch={dispatch} />
+            </div>
           </div>
         </div>
       ))}

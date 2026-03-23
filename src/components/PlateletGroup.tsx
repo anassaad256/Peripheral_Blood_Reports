@@ -16,12 +16,12 @@ export function PlateletGroup({ platelets, dispatch }: Props) {
     <section className="form-group">
       <div className="section-header">
         <span className="material-symbols-outlined">grid_view</span>
-        <h2>Platelet Estimate</h2>
+        <h2>Platelets</h2>
       </div>
 
       <div className="platelet-grid">
         <div>
-          <label className="sub-label">Estimated Count Category</label>
+          <label className="sub-label">Count Category</label>
           <div className="radio-row">
             {COUNT_OPTIONS.map((opt) => (
               <label key={String(opt.value)}>
