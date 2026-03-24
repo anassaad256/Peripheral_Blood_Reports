@@ -1,6 +1,6 @@
 # Peripheral Blood Smear Report Generator
 
-> **Last updated:** 2026-03-23
+> **Last updated:** 2026-03-24
 
 A deterministic, rule-based peripheral blood smear report generator built with React, TypeScript, and Vite. Designed for pathology workflows where multiple cases are reviewed in a single session.
 
@@ -18,17 +18,18 @@ Converts structured form inputs into standardized pathology report text. All out
 
 ### Clinical Report Builder
 - **Abnormality gate**: Quick toggle between normal ("Within normal limits") and abnormal smear paths
-- **RBC morphology**: Status (anemia/polycythemia), size, chromia, plus additional findings (reticulocytosis, anisocytosis, poikilocytosis, schistocytes, tear drop cells, target cells, free-text other)
-- **NRBC**: Increased nucleated RBCs, left shift
-- **WBC**: Count category (leukocytosis/normal/leukopenia) with differential abnormalities (neutropenia, neutrophilia, lymphopenia, lymphocytosis, monocytopenia, monocytosis, eosinophilia, basophilia) -- each with absolute/relative qualifiers
-- **Abnormal populations**: Dynamic list of entries with qualitative or percentage-based amounts and free-text population types
+- **RBC morphology**: Status (anemia/polycythemia), size, chromia, plus additional findings (anisocytosis, poikilocytosis, schistocytes, tear drop cells, target cells, elliptocytes, free-text other)
+- **NRBC / Reticulocytosis**: Increased nucleated RBCs, reticulocytosis -- joined with "and" when both selected
+- **WBC**: Count category (leukocytosis/normal/leukopenia), left shift, and differential abnormalities (neutropenia, neutrophilia, lymphopenia, lymphocytosis, monocytopenia, monocytosis, eosinophilia, basophilia) -- each with absolute/relative qualifiers. Left shift integrates into the WBC line (e.g., "leukocytosis with a left-shift, neutrophilia...")
+- **Abnormal populations**: Dynamic list of entries with qualitative or percentage-based amounts; population types include blasts, atypical lymphocytes, blastoid forms, immature forms, neutrophil morphology (hyposegmented/hypersegmented/hypogranular -- multi-select), and free-text
 - **Platelet assessment**: Count category, large platelets, platelet clumps
-- **Clinical interpretations**: Pre-defined interpretation statements (flow cytometry, reactive changes, iron deficiency, B12/folate deficiency, acute leukemia, CLL, degenerating specimen, clinical correlation, hematology consult)
+- **Clinical interpretations**: Pre-defined interpretation statements (flow cytometry, reactive changes, iron deficiency, B12/folate deficiency, acute leukemia, CLL, degenerating specimen, clinical correlation, hematology consult). Clinical correlation is selected by default
 
 ### Report Output
 - **Deterministic rendering**: Same inputs always produce the same report text
 - **Editable preview**: Generated text can be manually edited before finalizing
 - **Copy to clipboard**: One-click copy of report text
+- **Sticky Generate Report button**: Floats at the bottom of the viewport when the static button is scrolled out of view; auto-scrolls to the generated report on click
 - **Multi-case PDF printing**: Cover page + one page per case, monospace formatting, letter-size pages
 
 ### Data Persistence
