@@ -43,12 +43,12 @@ describe('Golden Tests', () => {
         size: null,
         chromia: null,
         additional: {
-          reticulocytosis: false,
           anisocytosis: true,
           poikilocytosis: false,
           schistocytes: false,
           tearDropCells: false,
           targetCells: false,
+          elliptocytes: false,
           otherText: '',
         },
       },
@@ -64,12 +64,12 @@ describe('Golden Tests', () => {
         size: 'macrocytic',
         chromia: null,
         additional: {
-          reticulocytosis: false,
           anisocytosis: false,
           poikilocytosis: false,
           schistocytes: false,
           tearDropCells: false,
           targetCells: false,
+          elliptocytes: false,
           otherText: '',
         },
       },
@@ -85,12 +85,12 @@ describe('Golden Tests', () => {
         size: 'macrocytic',
         chromia: null,
         additional: {
-          reticulocytosis: false,
           anisocytosis: true,
           poikilocytosis: true,
           schistocytes: true,
           tearDropCells: false,
           targetCells: false,
+          elliptocytes: false,
           otherText: '',
         },
       },
@@ -195,12 +195,12 @@ describe('Golden Tests', () => {
         size: 'macrocytic',
         chromia: null,
         additional: {
-          reticulocytosis: false,
           anisocytosis: true,
           poikilocytosis: true,
           schistocytes: true,
           tearDropCells: false,
           targetCells: false,
+          elliptocytes: false,
           otherText: '',
         },
       },
@@ -234,5 +234,43 @@ describe('Golden Tests', () => {
     ].join('\n');
 
     expect(renderReport(input)).toBe(expected);
+  });
+
+  test('Test 13 — WBC with left shift', () => {
+    const input = emptyInput({
+      hasAbnormalities: true,
+      wbc: {
+        countCategory: 'leukocytosis',
+        leftShift: true,
+        differentials: [
+          { type: 'neutrophilia', absolute: true, relative: true },
+        ],
+      },
+    });
+    expect(renderReport(input)).toBe(
+      'Leukocytosis with a left-shift and neutrophilia.'
+    );
+  });
+
+  test('Test 14 — Neutrophil morphology in abnormal populations', () => {
+    const input = emptyInput({
+      hasAbnormalities: true,
+      abnormalPopulations: {
+        entries: [
+          { amountType: 'qualitative', amountValue: 'occasional', populationType: 'neutrophils', neutrophilMorphologies: ['hypersegmented', 'hypogranular'] },
+        ],
+      },
+    });
+    expect(renderReport(input)).toBe(
+      'Occasional hypersegmented and hypogranular neutrophils present.'
+    );
+  });
+
+  test('Test 15 — NRBC reticulocytosis only', () => {
+    const input = emptyInput({
+      hasAbnormalities: true,
+      nrbc: { increasedNucleatedRbcs: false, reticulocytosis: true },
+    });
+    expect(renderReport(input)).toBe('Reticulocytosis.');
   });
 });

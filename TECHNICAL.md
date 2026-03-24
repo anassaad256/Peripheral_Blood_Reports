@@ -1,6 +1,6 @@
 # Technical Documentation -- Peripheral Blood Smear Report Generator
 
-> **Last updated:** 2026-03-23
+> **Last updated:** 2026-03-24
 
 This document provides a detailed technical reference for the architecture, data flow, state management, rendering engine, and component design of the Peripheral Blood Smear Report Generator.
 
@@ -141,12 +141,14 @@ The `SessionAction` discriminated union covers all state transitions:
 - `SET_RBC_STATUS`, `SET_RBC_SIZE`, `SET_RBC_CHROMIA` -- RBC radio selections
 - `TOGGLE_RBC_ADDITIONAL { field }` -- toggle boolean RBC findings
 - `SET_RBC_OTHER_TEXT` -- free-text RBC finding
-- `TOGGLE_NRBC_INCREASED`, `TOGGLE_LEFT_SHIFT` -- NRBC toggles
+- `TOGGLE_NRBC_INCREASED`, `TOGGLE_RETICULOCYTOSIS` -- NRBC toggles
 - `SET_WBC_COUNT` -- WBC count category
+- `TOGGLE_WBC_LEFT_SHIFT` -- WBC left shift toggle
 - `TOGGLE_DIFFERENTIAL { diffType }` -- add/remove a differential
 - `TOGGLE_DIFFERENTIAL_QUALIFIER { diffType, qualifier }` -- toggle absolute/relative
 - `ADD_ABNORMAL_ENTRY`, `REMOVE_ABNORMAL_ENTRY { index }` -- manage abnormal population list
 - `SET_ABNORMAL_AMOUNT_TYPE`, `SET_ABNORMAL_AMOUNT_VALUE`, `SET_ABNORMAL_POPULATION_TYPE` -- update abnormal entries
+- `TOGGLE_NEUTROPHIL_MORPHOLOGY { index, morphology }` -- toggle neutrophil morphology (hyposegmented/hypersegmented/hypogranular) on an abnormal entry
 - `SET_PLATELET_COUNT`, `TOGGLE_LARGE_PLATELETS`, `TOGGLE_PLATELET_CLUMPS` -- platelet fields
 - `TOGGLE_INTERPRETATION { key }` -- toggle interpretation statements
 - `SET_GENERATED_REPORT { text }` -- store finalized report text on the active case
@@ -180,8 +182,8 @@ Main orchestrator. Builds the report by concatenating sections separated by blan
 1. **Metadata header** (`renderMetadata`) -- Date (formatted M/D/YYYY), Case ID, Signing Pathologist
 2. **Body** -- either "Within normal limits." (if `hasAbnormalities === false`) or finding lines:
    - `renderRbc()` -- RBC morphology line
-   - `renderNrbc()` -- NRBC findings line
-   - `renderWbc()` -- WBC count + differentials line
+   - `renderNrbc()` -- NRBC findings line (increased nucleated RBCs and/or reticulocytosis)
+   - `renderWbc()` -- WBC count + optional left shift + differentials line
    - `renderAbnormalPopulations()` -- abnormal population entries
    - `renderPlatelets()` -- platelet findings line
 3. **Interpretations** (`renderInterpretations`) -- newline-separated interpretation statements
@@ -230,7 +232,7 @@ The main case editing workspace. For the active case:
 2. `AbnormalityGate` -- Yes/No toggle for abnormalities
 3. Conditionally rendered clinical groups (only when `hasAbnormalities === true`):
    - `RbcGroup`, `NrbcGroup`, `WbcGroup`, `AbnormalPopGroup`, `PlateletGroup`, `InterpretationGroup`
-4. Action buttons: "Reset Case" and "Generate Report"
+4. Action buttons: "Reset Case" and "Generate Report". The Generate Report button uses an IntersectionObserver to detect when it scrolls out of view, showing a sticky floating version pinned to the bottom of the viewport
 5. `CaseReportPreview` -- shown after generation, with editable textarea
 
 **Case switching**: Uses a `useRef` to track the previous case ID and `useEffect` to reset the preview text when switching cases.
@@ -249,11 +251,11 @@ These components are pure form renderers. They receive their data slice and a di
 
 - **AbnormalityGate**: Two radio-style buttons for Yes/No
 - **RbcGroup**: Radio groups for status, size, chromia; checkboxes for additional findings; text input for "other"
-- **NrbcGroup**: Checkboxes for increased NRBCs and left shift
-- **WbcGroup**: Radio group for count category; checkboxes for differentials with nested absolute/relative qualifier checkboxes
-- **AbnormalPopGroup**: Dynamic list with add/remove; each entry has amount type selector (qualitative dropdown or percentage input) and population type text input
+- **NrbcGroup**: Checkboxes for increased NRBCs and reticulocytosis
+- **WbcGroup**: Radio group for count category; left shift checkbox; checkboxes for differentials with nested absolute/relative qualifier checkboxes. Left shift is rendered as "a left-shift" in the WBC line before differentials
+- **AbnormalPopGroup**: Dynamic list with add/remove; each entry has amount type selector (qualitative dropdown or percentage input) and population type selector (blasts, atypical lymphocytes, blastoid forms, immature forms, neutrophils, free-text). When "neutrophils" is selected, a multi-select appears for morphology descriptors (hyposegmented, hypersegmented, hypogranular)
 - **PlateletGroup**: Radio group for count; checkboxes for large platelets and clumps
-- **InterpretationGroup**: Checkbox grid of pre-defined interpretation statements from `constants/interpretations.ts`
+- **InterpretationGroup**: Checkbox grid of pre-defined interpretation statements from `constants/interpretations.ts`. Clinical correlation is selected by default when abnormalities are first toggled on
 
 ### MetadataSection (src/components/MetadataSection.tsx)
 
@@ -334,7 +336,7 @@ All types are in `src/types/` with a barrel export from `index.ts`.
 | `rbc.ts` | `RbcStatus`, `RbcSize`, `RbcChromia`, `RbcAdditionalFindings`, `RbcGroup` | RBC morphology |
 | `nrbc.ts` | `NrbcGroup` | Nucleated RBC findings |
 | `wbc.ts` | `WbcCountCategory`, `DifferentialType`, `DifferentialAbnormality`, `WbcGroup` | WBC + differentials |
-| `abnormalPopulations.ts` | `AmountType`, `AbnormalEntry`, `AbnormalPopulationsGroup` | Abnormal populations |
+| `abnormalPopulations.ts` | `AmountType`, `NeutrophilMorphology`, `AbnormalEntry`, `AbnormalPopulationsGroup` | Abnormal populations |
 | `platelets.ts` | `PlateletCount`, `PlateletGroup` | Platelet findings |
 | `interpretations.ts` | `InterpretationKey`, `InterpretationsGroup` | Clinical interpretations |
 | `metadata.ts` | `ReportMetadata` | Per-report metadata (engine input) |
@@ -343,7 +345,7 @@ All types are in `src/types/` with a barrel export from `index.ts`.
 
 ### Action Types
 
-`SessionAction` is defined in `src/hooks/useSession.ts` as a discriminated union covering all 30+ state transitions.
+`SessionAction` is defined in `src/hooks/useSession.ts` as a discriminated union covering all 35+ state transitions.
 
 ---
 
@@ -368,6 +370,7 @@ All styles are in `src/App.css`. The design uses:
 | `.report-preview` | Generated report preview area |
 | `.session-summary` | Summary view container |
 | `.resume-prompt` | Session resume dialog overlay |
+| `.form-actions-sticky` | Sticky Generate Report button pinned to viewport bottom |
 
 ---
 
