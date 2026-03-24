@@ -3,12 +3,12 @@ export type RbcSize = 'microcytic' | 'normocytic' | 'macrocytic' | null;
 export type RbcChromia = 'hypochromic' | 'normochromic' | 'hyperchromic' | null;
 
 export interface RbcAdditionalFindings {
-  reticulocytosis: boolean;
   anisocytosis: boolean;
   poikilocytosis: boolean;
   schistocytes: boolean;
   tearDropCells: boolean;
   targetCells: boolean;
+  elliptocytes: boolean;
   otherText: string;
 }
 

@@ -55,8 +55,6 @@ function getAdditionalFindings(rbc: RbcGroup): string[] {
   const items: string[] = [];
   const a = rbc.additional;
 
-  if (a.reticulocytosis) items.push('reticulocytosis');
-
   // Derived: anisocytosis + poikilocytosis = anisopoikilocytosis
   if (a.anisocytosis && a.poikilocytosis) {
     items.push('anisopoikilocytosis');
@@ -68,6 +66,7 @@ function getAdditionalFindings(rbc: RbcGroup): string[] {
   if (a.schistocytes) items.push('schistocytes');
   if (a.tearDropCells) items.push('tear-drop cells');
   if (a.targetCells) items.push('target cells');
+  if (a.elliptocytes) items.push('elliptocytes');
   if (a.otherText.trim()) items.push(a.otherText.trim());
 
   return items;

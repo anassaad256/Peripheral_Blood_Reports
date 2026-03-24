@@ -23,13 +23,13 @@ const CHROMIA_OPTIONS: { value: RbcChromia; label: string }[] = [
   { value: 'hyperchromic', label: 'Hyperchromic' },
 ];
 
-const ADDITIONAL_CHECKBOXES: { field: 'reticulocytosis' | 'anisocytosis' | 'poikilocytosis' | 'schistocytes' | 'tearDropCells' | 'targetCells'; label: string }[] = [
-  { field: 'reticulocytosis', label: 'Reticulocytosis' },
+const ADDITIONAL_CHECKBOXES: { field: 'anisocytosis' | 'poikilocytosis' | 'schistocytes' | 'tearDropCells' | 'targetCells' | 'elliptocytes'; label: string }[] = [
   { field: 'anisocytosis', label: 'Anisocytosis' },
   { field: 'poikilocytosis', label: 'Poikilocytosis' },
   { field: 'schistocytes', label: 'Schistocytes' },
   { field: 'tearDropCells', label: 'Tear-drop cells' },
   { field: 'targetCells', label: 'Target cells' },
+  { field: 'elliptocytes', label: 'Elliptocytes' },
 ];
 
 export function RbcGroup({ rbc, dispatch }: Props) {

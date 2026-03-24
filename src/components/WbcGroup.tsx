@@ -73,6 +73,20 @@ export function WbcGroup({ wbc, dispatch }: Props) {
       </div>
 
       <div className="sub-group">
+        <label className="sub-label">Left Shift</label>
+        <div className="checkbox-grid">
+          <label>
+            <input
+              type="checkbox"
+              checked={wbc.leftShift}
+              onChange={() => dispatch({ type: 'TOGGLE_WBC_LEFT_SHIFT' })}
+            />
+            Left shift present
+          </label>
+        </div>
+      </div>
+
+      <div className="sub-group">
         <label className="sub-label">Differential Abnormalities &amp; Qualifiers</label>
         <div className="checkbox-column">
           {/* Lineage pairs rendered on same line */}
