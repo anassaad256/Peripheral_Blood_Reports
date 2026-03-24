@@ -8,10 +8,13 @@ export type PredefinedPopulationType =
   | 'blastoid forms'
   | 'immature forms';
 
+export type NeutrophilMorphology = 'hyposegmented' | 'hypersegmented' | 'hypogranular';
+
 export interface AbnormalPopulationEntry {
   amountType: AmountType;
   amountValue: string;
   populationType: string;
+  neutrophilMorphologies: NeutrophilMorphology[];
 }
 
 export interface AbnormalPopulationsGroup {

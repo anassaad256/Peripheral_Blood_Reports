@@ -11,17 +11,17 @@ function emptyInput(overrides: Partial<ReportInput> = {}): ReportInput {
       size: null,
       chromia: null,
       additional: {
-        reticulocytosis: false,
         anisocytosis: false,
         poikilocytosis: false,
         schistocytes: false,
         tearDropCells: false,
         targetCells: false,
+        elliptocytes: false,
         otherText: '',
       },
     },
-    nrbc: { increasedNucleatedRbcs: false, leftShift: false },
-    wbc: { countCategory: null, differentials: [] },
+    nrbc: { increasedNucleatedRbcs: false, reticulocytosis: false },
+    wbc: { countCategory: null, leftShift: false, differentials: [] },
     abnormalPopulations: { entries: [] },
     platelets: { count: null, largePlatelets: false, plateletClumps: false },
     interpretations: { selected: [] },
@@ -103,7 +103,7 @@ describe('Golden Tests', () => {
   test('Test 5 — WBC count only', () => {
     const input = emptyInput({
       hasAbnormalities: true,
-      wbc: { countCategory: 'leukopenia', differentials: [] },
+      wbc: { countCategory: 'leukopenia', leftShift: false, differentials: [] },
     });
     expect(renderReport(input)).toBe('Leukopenia.');
   });
@@ -113,12 +113,13 @@ describe('Golden Tests', () => {
       hasAbnormalities: true,
       wbc: {
         countCategory: null,
+        leftShift: false,
         differentials: [
           { type: 'lymphocytosis', absolute: true, relative: false },
         ],
       },
     });
-    expect(renderReport(input)).toBe('Absolute lymphocytosis.');
+    expect(renderReport(input)).toBe('Normal WBC count with absolute lymphocytosis.');
   });
 
   test('Test 7 — WBC count plus differential', () => {
@@ -126,6 +127,7 @@ describe('Golden Tests', () => {
       hasAbnormalities: true,
       wbc: {
         countCategory: 'leukocytosis',
+        leftShift: false,
         differentials: [
           { type: 'neutrophilia', absolute: true, relative: true },
           { type: 'lymphopenia', absolute: true, relative: false },
@@ -137,12 +139,12 @@ describe('Golden Tests', () => {
     );
   });
 
-  test('Test 8 — Leukoerythroblastosis', () => {
+  test('Test 8 — Increased nucleated RBCs and reticulocytosis', () => {
     const input = emptyInput({
       hasAbnormalities: true,
-      nrbc: { increasedNucleatedRbcs: true, leftShift: true },
+      nrbc: { increasedNucleatedRbcs: true, reticulocytosis: true },
     });
-    expect(renderReport(input)).toBe('Leukoerythroblastosis.');
+    expect(renderReport(input)).toBe('Increased nucleated RBCs and reticulocytosis.');
   });
 
   test('Test 9 — Abnormal populations', () => {
@@ -150,8 +152,8 @@ describe('Golden Tests', () => {
       hasAbnormalities: true,
       abnormalPopulations: {
         entries: [
-          { amountType: 'numeric', amountValue: '4-5', populationType: 'blasts' },
-          { amountType: 'qualitative', amountValue: 'increased', populationType: 'atypical lymphocytes' },
+          { amountType: 'numeric', amountValue: '4-5', populationType: 'blasts', neutrophilMorphologies: [] },
+          { amountType: 'qualitative', amountValue: 'increased', populationType: 'atypical lymphocytes', neutrophilMorphologies: [] },
         ],
       },
     });
@@ -204,6 +206,7 @@ describe('Golden Tests', () => {
       },
       wbc: {
         countCategory: 'leukocytosis',
+        leftShift: false,
         differentials: [
           { type: 'neutrophilia', absolute: true, relative: true },
           { type: 'lymphopenia', absolute: true, relative: false },

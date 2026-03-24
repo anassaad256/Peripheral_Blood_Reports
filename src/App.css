@@ -559,6 +559,29 @@
   gap: 6px;
 }
 
+.neutrophil-morphologies {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  padding: 8px 12px 8px 24px;
+  background: var(--surface-lowest);
+  border-radius: 10px;
+}
+
+.neutrophil-morphologies label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.neutrophil-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--on-surface);
+}
+
 .amount-picker {
   display: flex;
   flex-direction: column;
@@ -703,6 +726,23 @@
   align-items: center;
   gap: 12px;
   padding: 20px 0;
+}
+
+.form-actions-sticky {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 12px 24px;
+  background: rgba(247, 249, 251, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-top: 1px solid rgba(191, 199, 210, 0.35);
+  box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.06);
 }
 
 .btn-generate {

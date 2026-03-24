@@ -25,16 +25,16 @@ export function NrbcGroup({ nrbc, dispatch }: Props) {
       </div>
       <div className="nrbc-card">
         <h3>
-          <span className="material-symbols-outlined" style={{ color: 'var(--primary)' }}>keyboard_double_arrow_left</span>
-          Granulocytic Left Shift
+          <span className="material-symbols-outlined" style={{ color: 'var(--tertiary)' }}>restart_alt</span>
+          Reticulocytosis
         </h3>
         <label>
           <input
             type="checkbox"
-            checked={nrbc.leftShift}
-            onChange={() => dispatch({ type: 'TOGGLE_LEFT_SHIFT' })}
+            checked={nrbc.reticulocytosis}
+            onChange={() => dispatch({ type: 'TOGGLE_RETICULOCYTOSIS' })}
           />
-          Left shift present
+          Reticulocytosis
         </label>
       </div>
     </div>

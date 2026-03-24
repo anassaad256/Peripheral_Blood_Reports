@@ -3,7 +3,7 @@ import type { Session, CaseData } from '../types';
 import type {
   RbcStatus, RbcSize, RbcChromia,
   WbcCountCategory, DifferentialType, PlateletCount,
-  InterpretationKey, AmountType,
+  InterpretationKey, AmountType, NeutrophilMorphology,
 } from '../types';
 
 const STORAGE_KEY = 'pbs-session';
@@ -19,13 +19,13 @@ export function createEmptyCase(): CaseData {
     hasAbnormalities: null,
     rbc: {
       status: null, size: null, chromia: null,
-      additional: { reticulocytosis: false, anisocytosis: false, poikilocytosis: false, schistocytes: false, tearDropCells: false, targetCells: false, otherText: '' },
+      additional: { anisocytosis: false, poikilocytosis: false, schistocytes: false, tearDropCells: false, targetCells: false, elliptocytes: false, otherText: '' },
     },
-    nrbc: { increasedNucleatedRbcs: false, leftShift: false },
-    wbc: { countCategory: null, differentials: [] },
+    nrbc: { increasedNucleatedRbcs: false, reticulocytosis: false },
+    wbc: { countCategory: null, leftShift: false, differentials: [] },
     abnormalPopulations: { entries: [] },
     platelets: { count: null, largePlatelets: false, plateletClumps: false },
-    interpretations: { selected: [] },
+    interpretations: { selected: ['clinical_correlation'] },
     generatedReport: null,
   };
 }
@@ -65,10 +65,11 @@ export type SessionAction =
   | { type: 'SET_RBC_STATUS'; value: RbcStatus }
   | { type: 'SET_RBC_SIZE'; value: RbcSize }
   | { type: 'SET_RBC_CHROMIA'; value: RbcChromia }
-  | { type: 'TOGGLE_RBC_ADDITIONAL'; field: 'reticulocytosis' | 'anisocytosis' | 'poikilocytosis' | 'schistocytes' | 'tearDropCells' | 'targetCells' }
+  | { type: 'TOGGLE_RBC_ADDITIONAL'; field: 'anisocytosis' | 'poikilocytosis' | 'schistocytes' | 'tearDropCells' | 'targetCells' | 'elliptocytes' }
   | { type: 'SET_RBC_OTHER_TEXT'; value: string }
   | { type: 'TOGGLE_NRBC_INCREASED' }
-  | { type: 'TOGGLE_LEFT_SHIFT' }
+  | { type: 'TOGGLE_RETICULOCYTOSIS' }
+  | { type: 'TOGGLE_WBC_LEFT_SHIFT' }
   | { type: 'SET_WBC_COUNT'; value: WbcCountCategory }
   | { type: 'TOGGLE_DIFFERENTIAL'; diffType: DifferentialType }
   | { type: 'TOGGLE_DIFFERENTIAL_QUALIFIER'; diffType: DifferentialType; qualifier: 'absolute' | 'relative' }
@@ -77,6 +78,7 @@ export type SessionAction =
   | { type: 'SET_ABNORMAL_AMOUNT_TYPE'; index: number; amountType: AmountType }
   | { type: 'SET_ABNORMAL_AMOUNT_VALUE'; index: number; value: string }
   | { type: 'SET_ABNORMAL_POPULATION_TYPE'; index: number; value: string }
+  | { type: 'TOGGLE_NEUTROPHIL_MORPHOLOGY'; index: number; morphology: NeutrophilMorphology }
   | { type: 'SET_PLATELET_COUNT'; value: PlateletCount }
   | { type: 'TOGGLE_LARGE_PLATELETS' }
   | { type: 'TOGGLE_PLATELET_CLUMPS' }
@@ -173,14 +175,16 @@ function sessionReducer(state: Session, action: SessionAction): Session {
       return updateActiveCase(state, (c) => ({
         ...c, nrbc: { ...c.nrbc, increasedNucleatedRbcs: !c.nrbc.increasedNucleatedRbcs },
       }));
-    case 'TOGGLE_LEFT_SHIFT':
+    case 'TOGGLE_RETICULOCYTOSIS':
       return updateActiveCase(state, (c) => ({
-        ...c, nrbc: { ...c.nrbc, leftShift: !c.nrbc.leftShift },
+        ...c, nrbc: { ...c.nrbc, reticulocytosis: !c.nrbc.reticulocytosis },
       }));
 
     // WBC
     case 'SET_WBC_COUNT':
       return updateActiveCase(state, (c) => ({ ...c, wbc: { ...c.wbc, countCategory: action.value } }));
+    case 'TOGGLE_WBC_LEFT_SHIFT':
+      return updateActiveCase(state, (c) => ({ ...c, wbc: { ...c.wbc, leftShift: !c.wbc.leftShift } }));
     case 'TOGGLE_DIFFERENTIAL': {
       return updateActiveCase(state, (c) => {
         const exists = c.wbc.differentials.find((d) => d.type === action.diffType);
@@ -205,7 +209,7 @@ function sessionReducer(state: Session, action: SessionAction): Session {
     case 'ADD_ABNORMAL_ENTRY':
       return updateActiveCase(state, (c) => ({
         ...c,
-        abnormalPopulations: { entries: [...c.abnormalPopulations.entries, { amountType: 'qualitative', amountValue: '', populationType: '' }] },
+        abnormalPopulations: { entries: [...c.abnormalPopulations.entries, { amountType: 'qualitative', amountValue: '', populationType: '', neutrophilMorphologies: [] }] },
       }));
     case 'REMOVE_ABNORMAL_ENTRY':
       return updateActiveCase(state, (c) => ({
@@ -235,8 +239,24 @@ function sessionReducer(state: Session, action: SessionAction): Session {
         ...c,
         abnormalPopulations: {
           entries: c.abnormalPopulations.entries.map((e, i) =>
-            i === action.index ? { ...e, populationType: action.value } : e
+            i === action.index ? { ...e, populationType: action.value, neutrophilMorphologies: action.value === 'neutrophils' ? e.neutrophilMorphologies : [] } : e
           ),
+        },
+      }));
+    case 'TOGGLE_NEUTROPHIL_MORPHOLOGY':
+      return updateActiveCase(state, (c) => ({
+        ...c,
+        abnormalPopulations: {
+          entries: c.abnormalPopulations.entries.map((e, i) => {
+            if (i !== action.index) return e;
+            const has = e.neutrophilMorphologies.includes(action.morphology);
+            return {
+              ...e,
+              neutrophilMorphologies: has
+                ? e.neutrophilMorphologies.filter((m) => m !== action.morphology)
+                : [...e.neutrophilMorphologies, action.morphology],
+            };
+          }),
         },
       }));
 

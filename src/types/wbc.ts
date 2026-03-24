@@ -18,5 +18,6 @@ export interface DifferentialAbnormality {
 
 export interface WbcGroup {
   countCategory: WbcCountCategory;
+  leftShift: boolean;
   differentials: DifferentialAbnormality[];
 }

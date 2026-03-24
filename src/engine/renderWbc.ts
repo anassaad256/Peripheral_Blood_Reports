@@ -58,32 +58,38 @@ function sortDifferentials(
 
 export function renderWbc(wbc: WbcGroup): string {
   const hasCount = wbc.countCategory !== null;
+  const hasLeftShift = wbc.leftShift;
   // Only include differentials that have at least one qualifier
   const validDiffs = wbc.differentials.filter((d) => d.absolute || d.relative);
   const hasDiffs = validDiffs.length > 0;
 
-  if (!hasCount && !hasDiffs) {
+  if (!hasCount && !hasLeftShift && !hasDiffs) {
     return '';
   }
 
-  const effectiveCategory = wbc.countCategory ?? (hasDiffs ? 'normal_wbc_count' : null);
+  const effectiveCategory = wbc.countCategory ?? ((hasDiffs || hasLeftShift) ? 'normal_wbc_count' : null);
   const countLabel = effectiveCategory === 'normal_wbc_count'
     ? 'normal WBC count'
     : effectiveCategory ?? '';
 
   const sorted = sortDifferentials(validDiffs, wbc.countCategory);
   const diffLabels = sorted.map(renderDifferentialLabel);
-  const diffStr = formatList(diffLabels);
 
+  // Build the "with" items: left shift first, then differentials
+  const withItems: string[] = [];
+  if (hasLeftShift) withItems.push('a left-shift');
+  withItems.push(...diffLabels);
+
+  const withStr = formatList(withItems);
   const hasEffectiveCount = effectiveCategory !== null;
 
   let line = '';
-  if (hasEffectiveCount && hasDiffs) {
-    line = `${countLabel} with ${diffStr}`;
+  if (hasEffectiveCount && withItems.length > 0) {
+    line = `${countLabel} with ${withStr}`;
   } else if (hasEffectiveCount) {
     line = countLabel;
   } else {
-    line = diffStr;
+    line = withStr;
   }
 
   return formatLine(line);

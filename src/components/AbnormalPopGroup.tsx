@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import type { AbnormalPopulationsGroup } from '../types';
+import type { AbnormalPopulationsGroup, NeutrophilMorphology } from '../types';
 import type { SessionAction } from '../hooks/useSession';
 
 interface Props {
@@ -9,6 +9,11 @@ interface Props {
 
 const QUALITATIVE_AMOUNTS = ['rare', 'few', 'occasional', 'increased'];
 const POPULATION_TYPES = ['blasts', 'atypical lymphocytes', 'blastoid forms', 'immature forms'];
+const NEUTROPHIL_MORPHOLOGIES: { value: NeutrophilMorphology; label: string }[] = [
+  { value: 'hyposegmented', label: 'Hyposegmented (Pelgeroid)' },
+  { value: 'hypersegmented', label: 'Hypersegmented' },
+  { value: 'hypogranular', label: 'Hypogranular' },
+];
 
 function AmountPicker({
   entry,
@@ -102,12 +107,15 @@ function PopulationPicker({
   index,
   dispatch,
 }: {
-  entry: { populationType: string };
+  entry: { populationType: string; neutrophilMorphologies: NeutrophilMorphology[] };
   index: number;
   dispatch: React.Dispatch<SessionAction>;
 }) {
-  const isOther = entry.populationType !== '' && !POPULATION_TYPES.includes(entry.populationType);
-  const isOtherSelected = isOther || (entry.populationType === '' && false);
+  const [showOtherInput, setShowOtherInput] = useState(
+    entry.populationType !== '' && !POPULATION_TYPES.includes(entry.populationType) && entry.populationType !== 'neutrophils'
+  );
+  const isNeutrophils = entry.populationType === 'neutrophils';
+  const isOther = showOtherInput || (entry.populationType !== '' && !POPULATION_TYPES.includes(entry.populationType) && !isNeutrophils);
 
   return (
     <div className="population-picker">
@@ -117,7 +125,7 @@ function PopulationPicker({
             type="radio"
             name={`pop-type-${index}`}
             checked={entry.populationType === t}
-            onChange={() => dispatch({ type: 'SET_ABNORMAL_POPULATION_TYPE', index, value: t })}
+            onChange={() => { setShowOtherInput(false); dispatch({ type: 'SET_ABNORMAL_POPULATION_TYPE', index, value: t }); }}
           />
           {t.charAt(0).toUpperCase() + t.slice(1)}
         </label>
@@ -126,12 +134,36 @@ function PopulationPicker({
         <input
           type="radio"
           name={`pop-type-${index}`}
-          checked={isOther || isOtherSelected}
-          onChange={() => dispatch({ type: 'SET_ABNORMAL_POPULATION_TYPE', index, value: '' })}
+          checked={isNeutrophils}
+          onChange={() => { setShowOtherInput(false); dispatch({ type: 'SET_ABNORMAL_POPULATION_TYPE', index, value: 'neutrophils' }); }}
+        />
+        Neutrophils
+      </label>
+      {isNeutrophils && (
+        <div className="neutrophil-morphologies">
+          {NEUTROPHIL_MORPHOLOGIES.map((m) => (
+            <label key={m.value}>
+              <input
+                type="checkbox"
+                checked={entry.neutrophilMorphologies.includes(m.value)}
+                onChange={() => dispatch({ type: 'TOGGLE_NEUTROPHIL_MORPHOLOGY', index, morphology: m.value })}
+              />
+              {m.label}
+            </label>
+          ))}
+          <span className="neutrophil-label">neutrophils</span>
+        </div>
+      )}
+      <label className="amount-option">
+        <input
+          type="radio"
+          name={`pop-type-${index}`}
+          checked={isOther}
+          onChange={() => { setShowOtherInput(true); dispatch({ type: 'SET_ABNORMAL_POPULATION_TYPE', index, value: '' }); }}
         />
         Other (free text)
       </label>
-      {(isOther || isOtherSelected) && (
+      {isOther && (
         <input
           type="text"
           className="amount-inline-input"
