@@ -21,10 +21,10 @@ export type ReportAction =
   | { type: 'SET_RBC_STATUS'; value: RbcStatus }
   | { type: 'SET_RBC_SIZE'; value: RbcSize }
   | { type: 'SET_RBC_CHROMIA'; value: RbcChromia }
-  | { type: 'TOGGLE_RBC_ADDITIONAL'; field: 'reticulocytosis' | 'anisocytosis' | 'poikilocytosis' | 'schistocytes' | 'tearDropCells' | 'targetCells' }
+  | { type: 'TOGGLE_RBC_ADDITIONAL'; field: 'anisocytosis' | 'poikilocytosis' | 'schistocytes' | 'tearDropCells' | 'targetCells' | 'elliptocytes' }
   | { type: 'SET_RBC_OTHER_TEXT'; value: string }
   | { type: 'TOGGLE_NRBC_INCREASED' }
-  | { type: 'TOGGLE_LEFT_SHIFT' }
+  | { type: 'TOGGLE_RETICULOCYTOSIS' }
   | { type: 'SET_WBC_COUNT'; value: WbcCountCategory }
   | { type: 'TOGGLE_DIFFERENTIAL'; diffType: DifferentialType }
   | { type: 'TOGGLE_DIFFERENTIAL_QUALIFIER'; diffType: DifferentialType; qualifier: 'absolute' | 'relative' }
@@ -48,17 +48,17 @@ export function createInitialState(): ReportInput {
       size: null,
       chromia: null,
       additional: {
-        reticulocytosis: false,
         anisocytosis: false,
         poikilocytosis: false,
         schistocytes: false,
         tearDropCells: false,
         targetCells: false,
+        elliptocytes: false,
         otherText: '',
       },
     },
-    nrbc: { increasedNucleatedRbcs: false, leftShift: false },
-    wbc: { countCategory: null, differentials: [] },
+    nrbc: { increasedNucleatedRbcs: false, reticulocytosis: false },
+    wbc: { countCategory: null, leftShift: false, differentials: [] },
     abnormalPopulations: { entries: [] },
     platelets: { count: null, largePlatelets: false, plateletClumps: false },
     interpretations: { selected: [] },
@@ -110,7 +110,7 @@ function reportReducer(state: ReportInput, action: ReportAction): ReportInput {
           ...state.rbc,
           additional: {
             ...state.rbc.additional,
-            [action.field]: !state.rbc.additional[action.field],
+            [action.field]: !(state.rbc.additional[action.field] as boolean),
           },
         },
       };
@@ -128,10 +128,10 @@ function reportReducer(state: ReportInput, action: ReportAction): ReportInput {
         ...state,
         nrbc: { ...state.nrbc, increasedNucleatedRbcs: !state.nrbc.increasedNucleatedRbcs },
       };
-    case 'TOGGLE_LEFT_SHIFT':
+    case 'TOGGLE_RETICULOCYTOSIS':
       return {
         ...state,
-        nrbc: { ...state.nrbc, leftShift: !state.nrbc.leftShift },
+        nrbc: { ...state.nrbc, reticulocytosis: !state.nrbc.reticulocytosis },
       };
 
     case 'SET_WBC_COUNT':
@@ -178,7 +178,7 @@ function reportReducer(state: ReportInput, action: ReportAction): ReportInput {
         abnormalPopulations: {
           entries: [
             ...state.abnormalPopulations.entries,
-            { amountType: 'qualitative', amountValue: '', populationType: '' },
+            { amountType: 'qualitative', amountValue: '', populationType: '', neutrophilMorphologies: [] },
           ],
         },
       };
