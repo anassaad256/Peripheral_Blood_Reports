@@ -55,19 +55,34 @@ function getAdditionalFindings(rbc: RbcGroup): string[] {
   const items: string[] = [];
   const a = rbc.additional;
 
+  // Collect poikilocytosis sub-findings
+  const subFindings: string[] = [];
+  if (a.schistocytes) subFindings.push('schistocytes');
+  if (a.tearDropCells) subFindings.push('tear-drop cells');
+  if (a.targetCells) subFindings.push('target cells');
+  if (a.elliptocytes) subFindings.push('elliptocytes');
+  if (a.otherText.trim()) subFindings.push(a.otherText.trim());
+
   // Derived: anisocytosis + poikilocytosis = anisopoikilocytosis
   if (a.anisocytosis && a.poikilocytosis) {
-    items.push('anisopoikilocytosis');
+    if (subFindings.length > 0) {
+      items.push(`anisopoikilocytosis including ${formatList(subFindings)}`);
+    } else {
+      items.push('anisopoikilocytosis');
+    }
   } else {
     if (a.anisocytosis) items.push('anisocytosis');
-    if (a.poikilocytosis) items.push('poikilocytosis');
+    if (a.poikilocytosis) {
+      if (subFindings.length > 0) {
+        items.push(`poikilocytosis including ${formatList(subFindings)}`);
+      } else {
+        items.push('poikilocytosis');
+      }
+    } else {
+      // No poikilocytosis — sub-findings added individually
+      items.push(...subFindings);
+    }
   }
-
-  if (a.schistocytes) items.push('schistocytes');
-  if (a.tearDropCells) items.push('tear-drop cells');
-  if (a.targetCells) items.push('target cells');
-  if (a.elliptocytes) items.push('elliptocytes');
-  if (a.otherText.trim()) items.push(a.otherText.trim());
 
   return items;
 }

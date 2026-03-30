@@ -23,9 +23,14 @@ const CHROMIA_OPTIONS: { value: RbcChromia; label: string }[] = [
   { value: 'hyperchromic', label: 'Hyperchromic' },
 ];
 
-const ADDITIONAL_CHECKBOXES: { field: 'anisocytosis' | 'poikilocytosis' | 'schistocytes' | 'tearDropCells' | 'targetCells' | 'elliptocytes'; label: string }[] = [
+type AdditionalField = 'anisocytosis' | 'poikilocytosis' | 'schistocytes' | 'tearDropCells' | 'targetCells' | 'elliptocytes';
+
+const PRIMARY_CHECKBOXES: { field: AdditionalField; label: string }[] = [
   { field: 'anisocytosis', label: 'Anisocytosis' },
   { field: 'poikilocytosis', label: 'Poikilocytosis' },
+];
+
+const POIKILOCYTOSIS_FINDINGS: { field: AdditionalField; label: string }[] = [
   { field: 'schistocytes', label: 'Schistocytes' },
   { field: 'tearDropCells', label: 'Tear-drop cells' },
   { field: 'targetCells', label: 'Target cells' },
@@ -109,9 +114,9 @@ export function RbcGroup({ rbc, dispatch }: Props) {
       </div>
 
       <div className="sub-group">
-        <label className="sub-label">Additional Findings (Multi-select)</label>
+        <label className="sub-label">Additional Findings</label>
         <div className="checkbox-grid">
-          {ADDITIONAL_CHECKBOXES.map((cb) => (
+          {PRIMARY_CHECKBOXES.map((cb) => (
             <label key={cb.field}>
               <input
                 type="checkbox"
@@ -122,17 +127,35 @@ export function RbcGroup({ rbc, dispatch }: Props) {
             </label>
           ))}
         </div>
-        <div className="field" style={{ marginTop: 12 }}>
-          <input
-            id="rbc-other"
-            type="text"
-            value={rbc.additional.otherText}
-            onChange={(e) => dispatch({ type: 'SET_RBC_OTHER_TEXT', value: e.target.value })}
-            placeholder="Other RBC findings..."
-            style={{ background: 'var(--surface-lowest)', border: 'none', borderRadius: 12, height: 44, padding: '8px 16px' }}
-          />
-        </div>
       </div>
+
+      {rbc.additional.poikilocytosis && (
+        <div className="sub-group">
+          <label className="sub-label">Poikilocytosis Findings</label>
+          <div className="checkbox-grid">
+            {POIKILOCYTOSIS_FINDINGS.map((cb) => (
+              <label key={cb.field}>
+                <input
+                  type="checkbox"
+                  checked={rbc.additional[cb.field] as boolean}
+                  onChange={() => dispatch({ type: 'TOGGLE_RBC_ADDITIONAL', field: cb.field })}
+                />
+                {cb.label}
+              </label>
+            ))}
+          </div>
+          <div className="field" style={{ marginTop: 12 }}>
+            <input
+              id="rbc-other"
+              type="text"
+              value={rbc.additional.otherText}
+              onChange={(e) => dispatch({ type: 'SET_RBC_OTHER_TEXT', value: e.target.value })}
+              placeholder="Other RBC findings..."
+              style={{ background: 'var(--surface-lowest)', border: 'none', borderRadius: 12, height: 44, padding: '8px 16px' }}
+            />
+          </div>
+        </div>
+      )}
     </section>
   );
 }
