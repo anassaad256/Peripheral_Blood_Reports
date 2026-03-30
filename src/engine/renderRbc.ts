@@ -84,7 +84,10 @@ function formatSubFindings(findings: SubFinding[]): string {
     }
   }
 
-  return groups.join(' and ');
+  if (groups.length <= 1) return groups[0] || '';
+  // Use comma-separated "and" when 3+ groups to avoid "X and Y and Z"
+  if (groups.length === 2) return `${groups[0]} and ${groups[1]}`;
+  return groups.slice(0, -1).join(', ') + ', and ' + groups[groups.length - 1];
 }
 
 function getAdditionalFindings(rbc: RbcGroup): string[] {
