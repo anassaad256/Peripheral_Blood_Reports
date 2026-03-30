@@ -1,4 +1,4 @@
-import type { RbcGroup } from '../types';
+import type { RbcGroup, PoikilocytosisQuantifier } from '../types';
 import { formatList, formatLine } from './textUtils';
 
 export function renderRbc(rbc: RbcGroup): string {
@@ -51,22 +51,58 @@ export function renderRbc(rbc: RbcGroup): string {
   return formatLine(line);
 }
 
+// Quantifier display order: no quantifier first, then increased, occasional, few, rare
+const QUANTIFIER_ORDER: (PoikilocytosisQuantifier)[] = [null, 'increased', 'occasional', 'few', 'rare'];
+
+interface SubFinding {
+  name: string;
+  quantifier: PoikilocytosisQuantifier;
+}
+
+/**
+ * Groups sub-findings by quantifier and renders them in order:
+ * 1. Items with no quantifier (bare names)
+ * 2. increased items
+ * 3. occasional items
+ * 4. few items
+ * 5. rare items
+ *
+ * Items sharing a quantifier are lumped: "few schistocytes and tear-drop cells"
+ * Groups are joined with " and ": "tear-drop cells and few schistocytes"
+ */
+function formatSubFindings(findings: SubFinding[]): string {
+  const groups: string[] = [];
+
+  for (const q of QUANTIFIER_ORDER) {
+    const items = findings.filter((f) => f.quantifier === q);
+    if (items.length === 0) continue;
+    const names = formatList(items.map((i) => i.name));
+    if (q === null) {
+      groups.push(names);
+    } else {
+      groups.push(`${q} ${names}`);
+    }
+  }
+
+  return groups.join(' and ');
+}
+
 function getAdditionalFindings(rbc: RbcGroup): string[] {
   const items: string[] = [];
   const a = rbc.additional;
 
-  // Collect poikilocytosis sub-findings
-  const subFindings: string[] = [];
-  if (a.schistocytes) subFindings.push('schistocytes');
-  if (a.tearDropCells) subFindings.push('tear-drop cells');
-  if (a.targetCells) subFindings.push('target cells');
-  if (a.elliptocytes) subFindings.push('elliptocytes');
-  if (a.otherText.trim()) subFindings.push(a.otherText.trim());
+  // Collect poikilocytosis sub-findings with their quantifiers
+  const subFindings: SubFinding[] = [];
+  if (a.schistocytes) subFindings.push({ name: 'schistocytes', quantifier: a.schistocytesQuantifier });
+  if (a.tearDropCells) subFindings.push({ name: 'tear-drop cells', quantifier: a.tearDropCellsQuantifier });
+  if (a.targetCells) subFindings.push({ name: 'target cells', quantifier: a.targetCellsQuantifier });
+  if (a.elliptocytes) subFindings.push({ name: 'elliptocytes', quantifier: a.elliptocytesQuantifier });
+  if (a.otherText.trim()) subFindings.push({ name: a.otherText.trim(), quantifier: a.otherTextQuantifier });
 
   // Derived: anisocytosis + poikilocytosis = anisopoikilocytosis
   if (a.anisocytosis && a.poikilocytosis) {
     if (subFindings.length > 0) {
-      items.push(`anisopoikilocytosis including ${formatList(subFindings)}`);
+      items.push(`anisopoikilocytosis including ${formatSubFindings(subFindings)}`);
     } else {
       items.push('anisopoikilocytosis');
     }
@@ -74,13 +110,13 @@ function getAdditionalFindings(rbc: RbcGroup): string[] {
     if (a.anisocytosis) items.push('anisocytosis');
     if (a.poikilocytosis) {
       if (subFindings.length > 0) {
-        items.push(`poikilocytosis including ${formatList(subFindings)}`);
+        items.push(`poikilocytosis including ${formatSubFindings(subFindings)}`);
       } else {
         items.push('poikilocytosis');
       }
     } else {
-      // No poikilocytosis — sub-findings added individually
-      items.push(...subFindings);
+      // No poikilocytosis — sub-findings added individually (shouldn't happen with UI gate)
+      items.push(...subFindings.map((f) => f.quantifier ? `${f.quantifier} ${f.name}` : f.name));
     }
   }
 

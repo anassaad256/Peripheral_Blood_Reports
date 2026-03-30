@@ -1,7 +1,7 @@
 import { useReducer, useEffect, useCallback } from 'react';
 import type { Session, CaseData } from '../types';
 import type {
-  RbcStatus, RbcSize, RbcChromia,
+  RbcStatus, RbcSize, RbcChromia, PoikilocytosisQuantifier,
   WbcCountCategory, DifferentialType, PlateletCount,
   InterpretationKey, AmountType, NeutrophilMorphology,
 } from '../types';
@@ -19,7 +19,7 @@ export function createEmptyCase(): CaseData {
     hasAbnormalities: null,
     rbc: {
       status: null, size: null, chromia: null,
-      additional: { anisocytosis: false, poikilocytosis: false, schistocytes: false, tearDropCells: false, targetCells: false, elliptocytes: false, otherText: '' },
+      additional: { anisocytosis: false, poikilocytosis: false, schistocytes: false, schistocytesQuantifier: null, tearDropCells: false, tearDropCellsQuantifier: null, targetCells: false, targetCellsQuantifier: null, elliptocytes: false, elliptocytesQuantifier: null, otherText: '', otherTextQuantifier: null },
     },
     nrbc: { increasedNucleatedRbcs: false, reticulocytosis: false },
     wbc: { countCategory: null, leftShift: false, differentials: [] },
@@ -66,6 +66,7 @@ export type SessionAction =
   | { type: 'SET_RBC_SIZE'; value: RbcSize }
   | { type: 'SET_RBC_CHROMIA'; value: RbcChromia }
   | { type: 'TOGGLE_RBC_ADDITIONAL'; field: 'anisocytosis' | 'poikilocytosis' | 'schistocytes' | 'tearDropCells' | 'targetCells' | 'elliptocytes' }
+  | { type: 'SET_RBC_QUANTIFIER'; field: 'schistocytesQuantifier' | 'tearDropCellsQuantifier' | 'targetCellsQuantifier' | 'elliptocytesQuantifier' | 'otherTextQuantifier'; value: PoikilocytosisQuantifier }
   | { type: 'SET_RBC_OTHER_TEXT'; value: string }
   | { type: 'TOGGLE_NRBC_INCREASED' }
   | { type: 'TOGGLE_RETICULOCYTOSIS' }
@@ -163,13 +164,22 @@ function sessionReducer(state: Session, action: SessionAction): Session {
       return updateActiveCase(state, (c) => {
         const toggled = !c.rbc.additional[action.field];
         let additional = { ...c.rbc.additional, [action.field]: toggled };
-        // When poikilocytosis is turned off, clear the sub-findings it gates
+        // When poikilocytosis is turned off, clear all sub-findings and quantifiers
         if (action.field === 'poikilocytosis' && !toggled) {
-          additional = { ...additional, schistocytes: false, tearDropCells: false, targetCells: false, elliptocytes: false, otherText: '' };
+          additional = { ...additional, schistocytes: false, schistocytesQuantifier: null, tearDropCells: false, tearDropCellsQuantifier: null, targetCells: false, targetCellsQuantifier: null, elliptocytes: false, elliptocytesQuantifier: null, otherText: '', otherTextQuantifier: null };
+        }
+        // When a sub-finding is turned off, clear its quantifier
+        if (action.field !== 'anisocytosis' && action.field !== 'poikilocytosis' && !toggled) {
+          additional = { ...additional, [`${action.field}Quantifier`]: null };
         }
         return { ...c, rbc: { ...c.rbc, additional } };
       });
     }
+    case 'SET_RBC_QUANTIFIER':
+      return updateActiveCase(state, (c) => ({
+        ...c,
+        rbc: { ...c.rbc, additional: { ...c.rbc.additional, [action.field]: action.value } },
+      }));
     case 'SET_RBC_OTHER_TEXT':
       return updateActiveCase(state, (c) => ({
         ...c,
