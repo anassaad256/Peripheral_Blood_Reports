@@ -339,54 +339,116 @@
   height: 16px;
 }
 
-/* ── Poikilocytosis finding rows ──────────────── */
-.poikilocytosis-finding-row {
+/* ── Poikilocytosis findings grid ─────────────── */
+.poik-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.poik-card {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 8px;
   padding: 8px 12px;
   border-radius: 10px;
   background: var(--surface-low);
   transition: all 0.15s;
 }
 
-.poikilocytosis-finding-row:hover {
+.poik-card--active {
   background: var(--surface-lowest);
 }
 
-.poikilocytosis-finding-row label {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 0.92rem;
+.poik-name {
+  all: unset;
+  font-size: 0.88rem;
+  font-weight: 500;
   cursor: pointer;
+  white-space: nowrap;
+  padding: 4px 0;
+  color: var(--text-secondary);
+  transition: color 0.15s;
 }
 
-.poikilocytosis-finding-row > label input[type="checkbox"] {
-  accent-color: var(--primary);
-  width: 16px;
-  height: 16px;
+.poik-name:hover {
+  color: var(--text-primary);
 }
 
-.quantifier-row {
+.poik-name--selected,
+.poik-card--active .poik-name {
+  color: var(--primary);
+}
+
+.poik-pills {
   display: flex;
-  gap: 12px;
+  gap: 4px;
   margin-left: auto;
 }
 
-.quantifier-label {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 0.82rem;
-  color: var(--text-secondary);
+.poik-pill {
+  all: unset;
+  font-size: 0.76rem;
+  padding: 3px 8px;
+  border-radius: 8px;
   cursor: pointer;
+  color: var(--text-secondary);
+  background: transparent;
+  border: 1px solid transparent;
+  transition: all 0.15s;
+  white-space: nowrap;
 }
 
-.quantifier-label input[type="radio"] {
-  accent-color: var(--primary);
-  width: 14px;
-  height: 14px;
+.poik-pill:hover {
+  background: var(--surface-lowest);
+  border-color: var(--border);
+}
+
+.poik-pill--active {
+  background: var(--primary);
+  color: #fff;
+  border-color: var(--primary);
+}
+
+.poik-pill--active:hover {
+  background: var(--primary);
+  border-color: var(--primary);
+  opacity: 0.9;
+}
+
+/* ── Poikilocytosis other text ───────────────── */
+.poik-other-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 4px 12px;
+  border-radius: 10px;
+  background: var(--surface-low);
+  width: 50%;
+  transition: width 0.2s ease;
+}
+
+.poik-other-wrapper--has-text {
+  width: 100%;
+}
+
+.poik-other-input {
+  background: transparent;
+  border: none;
+  border-radius: 0;
+  height: 36px;
+  padding: 4px 0;
+  font-size: 0.88rem;
+  color: var(--text-primary);
+  outline: none;
+  flex: 1;
+  min-width: 0;
+}
+
+.poik-other-input::placeholder {
+  color: var(--text-secondary);
+  opacity: 0.6;
 }
 
 /* ── RBC 3-column layout ─────────────────────── */
