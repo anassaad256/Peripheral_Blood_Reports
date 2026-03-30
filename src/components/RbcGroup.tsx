@@ -33,19 +33,58 @@ const PRIMARY_CHECKBOXES: { field: AdditionalField; label: string }[] = [
 
 const POIKILOCYTOSIS_FINDINGS: { field: AdditionalField; label: string; quantifierField: QuantifierField }[] = [
   { field: 'schistocytes', label: 'Schistocytes', quantifierField: 'schistocytesQuantifier' },
+  { field: 'elliptocytes', label: 'Elliptocytes', quantifierField: 'elliptocytesQuantifier' },
   { field: 'tearDropCells', label: 'Tear-drop cells', quantifierField: 'tearDropCellsQuantifier' },
   { field: 'targetCells', label: 'Target cells', quantifierField: 'targetCellsQuantifier' },
-  { field: 'elliptocytes', label: 'Elliptocytes', quantifierField: 'elliptocytesQuantifier' },
 ];
 
-const QUANTIFIER_OPTIONS: { value: PoikilocytosisQuantifier; label: string }[] = [
+const QUANTIFIER_OPTIONS: { value: NonNullable<PoikilocytosisQuantifier>; label: string }[] = [
   { value: 'rare', label: 'Rare' },
   { value: 'few', label: 'Few' },
-  { value: 'occasional', label: 'Occasional' },
-  { value: 'increased', label: 'Increased' },
+  { value: 'occasional', label: 'Occ.' },
+  { value: 'increased', label: 'Incr.' },
 ];
 
 export function RbcGroup({ rbc, dispatch }: Props) {
+  const handleQuantifierClick = (
+    field: AdditionalField,
+    quantifierField: QuantifierField,
+    value: NonNullable<PoikilocytosisQuantifier>,
+  ) => {
+    const isActive = rbc.additional[field] as boolean;
+    const currentQ = rbc.additional[quantifierField];
+
+    if (isActive && currentQ === value) {
+      // Same quantifier clicked again — deselect finding entirely
+      dispatch({ type: 'TOGGLE_RBC_ADDITIONAL', field });
+    } else {
+      // Enable finding if not active, then set quantifier
+      if (!isActive) dispatch({ type: 'TOGGLE_RBC_ADDITIONAL', field });
+      dispatch({ type: 'SET_RBC_QUANTIFIER', field: quantifierField, value });
+    }
+  };
+
+  const handleNameClick = (field: AdditionalField, quantifierField: QuantifierField) => {
+    const isActive = rbc.additional[field] as boolean;
+    if (isActive) {
+      // Toggle off
+      dispatch({ type: 'TOGGLE_RBC_ADDITIONAL', field });
+    } else {
+      // Toggle on without quantifier
+      dispatch({ type: 'TOGGLE_RBC_ADDITIONAL', field });
+      dispatch({ type: 'SET_RBC_QUANTIFIER', field: quantifierField, value: null });
+    }
+  };
+
+  const handleOtherQuantifierClick = (value: NonNullable<PoikilocytosisQuantifier>) => {
+    const currentQ = rbc.additional.otherTextQuantifier;
+    if (currentQ === value) {
+      dispatch({ type: 'SET_RBC_QUANTIFIER', field: 'otherTextQuantifier', value: null });
+    } else {
+      dispatch({ type: 'SET_RBC_QUANTIFIER', field: 'otherTextQuantifier', value });
+    }
+  };
+
   return (
     <section className="form-group">
       <div className="section-header">
@@ -140,66 +179,55 @@ export function RbcGroup({ rbc, dispatch }: Props) {
       {rbc.additional.poikilocytosis && (
         <div className="sub-group">
           <label className="sub-label">Poikilocytosis Findings</label>
-          {POIKILOCYTOSIS_FINDINGS.map((cb) => (
-            <div key={cb.field} className="poikilocytosis-finding-row">
-              <label>
-                <input
-                  type="checkbox"
-                  checked={rbc.additional[cb.field] as boolean}
-                  onChange={() => dispatch({ type: 'TOGGLE_RBC_ADDITIONAL', field: cb.field })}
-                />
-                {cb.label}
-              </label>
-              {rbc.additional[cb.field] && (
-                <div className="quantifier-row">
-                  {QUANTIFIER_OPTIONS.map((q) => (
-                    <label key={q.value} className="quantifier-label">
-                      <input
-                        type="radio"
-                        name={`quantifier-${cb.field}`}
-                        checked={rbc.additional[cb.quantifierField] === q.value}
-                        onChange={() =>
-                          dispatch({ type: 'SET_RBC_QUANTIFIER', field: cb.quantifierField, value: rbc.additional[cb.quantifierField] === q.value ? null : q.value })
-                        }
-                        onClick={() => {
-                          if (rbc.additional[cb.quantifierField] === q.value)
-                            dispatch({ type: 'SET_RBC_QUANTIFIER', field: cb.quantifierField, value: null });
-                        }}
-                      />
-                      {q.label}
-                    </label>
-                  ))}
+          <div className="poik-grid">
+            {POIKILOCYTOSIS_FINDINGS.map((cb) => {
+              const isActive = rbc.additional[cb.field] as boolean;
+              const currentQ = rbc.additional[cb.quantifierField] as PoikilocytosisQuantifier;
+              return (
+                <div key={cb.field} className={`poik-card${isActive ? ' poik-card--active' : ''}`}>
+                  <button
+                    type="button"
+                    className={`poik-name${isActive && !currentQ ? ' poik-name--selected' : ''}`}
+                    onClick={() => handleNameClick(cb.field, cb.quantifierField)}
+                  >
+                    {cb.label}
+                  </button>
+                  <div className="poik-pills">
+                    {QUANTIFIER_OPTIONS.map((q) => (
+                      <button
+                        key={q.value}
+                        type="button"
+                        className={`poik-pill${currentQ === q.value ? ' poik-pill--active' : ''}`}
+                        onClick={() => handleQuantifierClick(cb.field, cb.quantifierField, q.value)}
+                      >
+                        {q.label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
-              )}
-            </div>
-          ))}
-          <div className="poikilocytosis-finding-row" style={{ marginTop: 12 }}>
+              );
+            })}
+          </div>
+          <div className={`poik-other-wrapper${rbc.additional.otherText.trim() ? ' poik-other-wrapper--has-text' : ''}`}>
             <input
               id="rbc-other"
               type="text"
+              className="poik-other-input"
               value={rbc.additional.otherText}
               onChange={(e) => dispatch({ type: 'SET_RBC_OTHER_TEXT', value: e.target.value })}
               placeholder="Other RBC findings..."
-              style={{ background: 'var(--surface-lowest)', border: 'none', borderRadius: 12, height: 44, padding: '8px 16px', flex: 1 }}
             />
             {rbc.additional.otherText.trim() && (
-              <div className="quantifier-row">
+              <div className="poik-pills">
                 {QUANTIFIER_OPTIONS.map((q) => (
-                  <label key={q.value} className="quantifier-label">
-                    <input
-                      type="radio"
-                      name="quantifier-otherText"
-                      checked={rbc.additional.otherTextQuantifier === q.value}
-                      onChange={() =>
-                        dispatch({ type: 'SET_RBC_QUANTIFIER', field: 'otherTextQuantifier', value: rbc.additional.otherTextQuantifier === q.value ? null : q.value })
-                      }
-                      onClick={() => {
-                        if (rbc.additional.otherTextQuantifier === q.value)
-                          dispatch({ type: 'SET_RBC_QUANTIFIER', field: 'otherTextQuantifier', value: null });
-                      }}
-                    />
+                  <button
+                    key={q.value}
+                    type="button"
+                    className={`poik-pill${rbc.additional.otherTextQuantifier === q.value ? ' poik-pill--active' : ''}`}
+                    onClick={() => handleOtherQuantifierClick(q.value)}
+                  >
                     {q.label}
-                  </label>
+                  </button>
                 ))}
               </div>
             )}
