@@ -424,13 +424,17 @@
   margin-top: 8px;
   padding: 4px 12px;
   border-radius: 10px;
-  background: var(--surface-low);
+  background: #fff;
   width: 50%;
   transition: width 0.2s ease;
 }
 
 .poik-other-wrapper--has-text {
   width: 100%;
+}
+
+.poik-other-wrapper .poik-pills {
+  margin-left: 0;
 }
 
 .poik-other-input {
