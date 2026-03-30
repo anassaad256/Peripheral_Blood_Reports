@@ -425,16 +425,16 @@
   padding: 4px 12px;
   border-radius: 10px;
   background: #fff;
-  width: 50%;
+  width: calc(50% - 4px);
   transition: width 0.2s ease;
 }
 
 .poik-other-wrapper--has-text {
-  width: 100%;
+  width: calc(50% - 4px);
 }
 
 .poik-other-wrapper .poik-pills {
-  margin-left: 0;
+  margin-left: auto;
 }
 
 .poik-other-input {
@@ -446,8 +446,14 @@
   font-size: 0.88rem;
   color: var(--text-primary);
   outline: none;
-  flex: 1;
   min-width: 0;
+  width: 100%;
+}
+
+.poik-other-wrapper--has-text .poik-other-input {
+  flex: 0 0 auto;
+  width: auto;
+  max-width: 140px;
 }
 
 .poik-other-input::placeholder {

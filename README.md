@@ -1,6 +1,6 @@
 # Peripheral Blood Smear Report Generator
 
-> **Last updated:** 2026-03-24
+> **Last updated:** 2026-03-30
 
 A deterministic, rule-based peripheral blood smear report generator built with React, TypeScript, and Vite. Designed for pathology workflows where multiple cases are reviewed in a single session.
 
@@ -18,7 +18,10 @@ Converts structured form inputs into standardized pathology report text. All out
 
 ### Clinical Report Builder
 - **Abnormality gate**: Quick toggle between normal ("Within normal limits") and abnormal smear paths
-- **RBC morphology**: Status (anemia/polycythemia), size, chromia, plus additional findings (anisocytosis, poikilocytosis, schistocytes, tear drop cells, target cells, elliptocytes, free-text other)
+- **RBC morphology**: Status (anemia/polycythemia), size, chromia, plus additional findings:
+  - **Anisocytosis / Poikilocytosis**: Primary checkboxes; selecting poikilocytosis reveals a sub-findings panel
+  - **Poikilocytosis findings**: Schistocytes, elliptocytes, tear-drop cells, target cells, and free-text -- displayed as a 2-column grid of clickable cards. Each card has optional quantifier pills (Rare, Few, Occasional, Increased) that double as selection toggles. Clicking a quantifier enables the finding and sets the amount; clicking the finding name enables it without a quantifier
+  - **Rendering**: Anisocytosis + poikilocytosis merges to "anisopoikilocytosis"; sub-findings use "including" (e.g., "anisopoikilocytosis including few schistocytes and rare elliptocytes"). Sub-findings are ordered: unqualified first, then by quantifier priority (increased > occasional > few > rare), with same-quantifier items grouped together
 - **NRBC / Reticulocytosis**: Increased nucleated RBCs, reticulocytosis -- joined with "and" when both selected
 - **WBC**: Count category (leukocytosis/normal/leukopenia), left shift, and differential abnormalities (neutropenia, neutrophilia, lymphopenia, lymphocytosis, monocytopenia, monocytosis, eosinophilia, basophilia) -- each with absolute/relative qualifiers. Left shift integrates into the WBC line (e.g., "leukocytosis with a left-shift, neutrophilia...")
 - **Abnormal populations**: Dynamic list of entries with qualitative or percentage-based amounts; population types include blasts, atypical lymphocytes, blastoid forms, immature forms, neutrophil morphology (hyposegmented/hypersegmented/hypogranular -- multi-select), and free-text

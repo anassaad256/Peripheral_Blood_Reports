@@ -1,6 +1,6 @@
 # Technical Documentation -- Peripheral Blood Smear Report Generator
 
-> **Last updated:** 2026-03-24
+> **Last updated:** 2026-03-30
 
 This document provides a detailed technical reference for the architecture, data flow, state management, rendering engine, and component design of the Peripheral Blood Smear Report Generator.
 
@@ -139,7 +139,8 @@ The `SessionAction` discriminated union covers all state transitions:
 - `SET_CASE_ID` -- case accession ID
 - `SET_HAS_ABNORMALITIES` -- when set to `false`, clears all abnormality fields
 - `SET_RBC_STATUS`, `SET_RBC_SIZE`, `SET_RBC_CHROMIA` -- RBC radio selections
-- `TOGGLE_RBC_ADDITIONAL { field }` -- toggle boolean RBC findings
+- `TOGGLE_RBC_ADDITIONAL { field }` -- toggle boolean RBC findings; toggling poikilocytosis off clears all sub-findings and their quantifiers; toggling a sub-finding off clears its quantifier
+- `SET_RBC_QUANTIFIER { field, value }` -- set quantifier (rare/few/occasional/increased/null) on a poikilocytosis sub-finding
 - `SET_RBC_OTHER_TEXT` -- free-text RBC finding
 - `TOGGLE_NRBC_INCREASED`, `TOGGLE_RETICULOCYTOSIS` -- NRBC toggles
 - `SET_WBC_COUNT` -- WBC count category
@@ -181,7 +182,7 @@ Main orchestrator. Builds the report by concatenating sections separated by blan
 
 1. **Metadata header** (`renderMetadata`) -- Date (formatted M/D/YYYY), Case ID, Signing Pathologist
 2. **Body** -- either "Within normal limits." (if `hasAbnormalities === false`) or finding lines:
-   - `renderRbc()` -- RBC morphology line
+   - `renderRbc()` -- RBC morphology line. Poikilocytosis sub-findings use "including" with quantifier-based ordering: unqualified first, then increased > occasional > few > rare; same-quantifier items are grouped (e.g., "few schistocytes and tear-drop cells"). Uses `formatSubFindings()` internally
    - `renderNrbc()` -- NRBC findings line (increased nucleated RBCs and/or reticulocytosis)
    - `renderWbc()` -- WBC count + optional left shift + differentials line
    - `renderAbnormalPopulations()` -- abnormal population entries
@@ -250,7 +251,7 @@ Displays the generated report text in an editable `<textarea>`. Actions:
 These components are pure form renderers. They receive their data slice and a dispatch function, and render form controls. None have internal state:
 
 - **AbnormalityGate**: Two radio-style buttons for Yes/No
-- **RbcGroup**: Radio groups for status, size, chromia; checkboxes for additional findings; text input for "other"
+- **RbcGroup**: Radio groups for status, size, chromia; checkboxes for anisocytosis/poikilocytosis. When poikilocytosis is selected, a sub-panel appears with a 2-column grid of clickable cards (schistocytes, elliptocytes, tear-drop cells, target cells) plus a free-text input. Each card displays the finding name (clickable toggle) and quantifier pills (Rare, Few, Occ., Incr.) as clickable buttons -- no checkboxes or radios. Clicking a quantifier enables the finding with that amount; clicking the name enables without quantifier. The free-text row has a white background card at half-width with inline quantifier pills that appear when text is entered
 - **NrbcGroup**: Checkboxes for increased NRBCs and reticulocytosis
 - **WbcGroup**: Radio group for count category; left shift checkbox; checkboxes for differentials with nested absolute/relative qualifier checkboxes. Left shift is rendered as "a left-shift" in the WBC line before differentials
 - **AbnormalPopGroup**: Dynamic list with add/remove; each entry has amount type selector (qualitative dropdown or percentage input) and population type selector (blasts, atypical lymphocytes, blastoid forms, immature forms, neutrophils, free-text). When "neutrophils" is selected, a multi-select appears for morphology descriptors (hyposegmented, hypersegmented, hypogranular)
@@ -333,7 +334,7 @@ All types are in `src/types/` with a barrel export from `index.ts`.
 
 | File | Types | Purpose |
 |------|-------|---------|
-| `rbc.ts` | `RbcStatus`, `RbcSize`, `RbcChromia`, `RbcAdditionalFindings`, `RbcGroup` | RBC morphology |
+| `rbc.ts` | `RbcStatus`, `RbcSize`, `RbcChromia`, `PoikilocytosisQuantifier`, `RbcAdditionalFindings`, `RbcGroup` | RBC morphology |
 | `nrbc.ts` | `NrbcGroup` | Nucleated RBC findings |
 | `wbc.ts` | `WbcCountCategory`, `DifferentialType`, `DifferentialAbnormality`, `WbcGroup` | WBC + differentials |
 | `abnormalPopulations.ts` | `AmountType`, `NeutrophilMorphology`, `AbnormalEntry`, `AbnormalPopulationsGroup` | Abnormal populations |
@@ -345,7 +346,7 @@ All types are in `src/types/` with a barrel export from `index.ts`.
 
 ### Action Types
 
-`SessionAction` is defined in `src/hooks/useSession.ts` as a discriminated union covering all 35+ state transitions.
+`SessionAction` is defined in `src/hooks/useSession.ts` as a discriminated union covering all 37+ state transitions.
 
 ---
 
@@ -371,6 +372,10 @@ All styles are in `src/App.css`. The design uses:
 | `.session-summary` | Summary view container |
 | `.resume-prompt` | Session resume dialog overlay |
 | `.form-actions-sticky` | Sticky Generate Report button pinned to viewport bottom |
+| `.poik-grid` | 2-column grid for poikilocytosis finding cards |
+| `.poik-card` | Individual finding card (name + quantifier pills) |
+| `.poik-pill` | Clickable quantifier pill button |
+| `.poik-other-wrapper` | Free-text finding row with white background |
 
 ---
 
