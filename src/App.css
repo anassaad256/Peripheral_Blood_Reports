@@ -425,16 +425,16 @@
   padding: 4px 12px;
   border-radius: 10px;
   background: #fff;
-  width: 50%;
+  width: calc(50% - 4px);
   transition: width 0.2s ease;
 }
 
 .poik-other-wrapper--has-text {
-  width: 100%;
+  width: calc(50% - 4px);
 }
 
 .poik-other-wrapper .poik-pills {
-  margin-left: 0;
+  margin-left: auto;
 }
 
 .poik-other-input {
