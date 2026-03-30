@@ -14,10 +14,15 @@ function emptyInput(overrides: Partial<ReportInput> = {}): ReportInput {
         anisocytosis: false,
         poikilocytosis: false,
         schistocytes: false,
+        schistocytesQuantifier: null,
         tearDropCells: false,
+        tearDropCellsQuantifier: null,
         targetCells: false,
+        targetCellsQuantifier: null,
         elliptocytes: false,
+        elliptocytesQuantifier: null,
         otherText: '',
+        otherTextQuantifier: null,
       },
     },
     nrbc: { increasedNucleatedRbcs: false, reticulocytosis: false },
@@ -45,11 +50,11 @@ describe('Golden Tests', () => {
         additional: {
           anisocytosis: true,
           poikilocytosis: false,
-          schistocytes: false,
-          tearDropCells: false,
-          targetCells: false,
-          elliptocytes: false,
-          otherText: '',
+          schistocytes: false, schistocytesQuantifier: null,
+          tearDropCells: false, tearDropCellsQuantifier: null,
+          targetCells: false, targetCellsQuantifier: null,
+          elliptocytes: false, elliptocytesQuantifier: null,
+          otherText: '', otherTextQuantifier: null,
         },
       },
     });
@@ -66,18 +71,18 @@ describe('Golden Tests', () => {
         additional: {
           anisocytosis: false,
           poikilocytosis: false,
-          schistocytes: false,
-          tearDropCells: false,
-          targetCells: false,
-          elliptocytes: false,
-          otherText: '',
+          schistocytes: false, schistocytesQuantifier: null,
+          tearDropCells: false, tearDropCellsQuantifier: null,
+          targetCells: false, targetCellsQuantifier: null,
+          elliptocytes: false, elliptocytesQuantifier: null,
+          otherText: '', otherTextQuantifier: null,
         },
       },
     });
     expect(renderReport(input)).toBe('Macrocytic RBCs.');
   });
 
-  test('Test 4 — RBC derived state', () => {
+  test('Test 4 — RBC derived state (no quantifiers)', () => {
     const input = emptyInput({
       hasAbnormalities: true,
       rbc: {
@@ -87,11 +92,11 @@ describe('Golden Tests', () => {
         additional: {
           anisocytosis: true,
           poikilocytosis: true,
-          schistocytes: true,
-          tearDropCells: false,
-          targetCells: false,
-          elliptocytes: false,
-          otherText: '',
+          schistocytes: true, schistocytesQuantifier: null,
+          tearDropCells: false, tearDropCellsQuantifier: null,
+          targetCells: false, targetCellsQuantifier: null,
+          elliptocytes: false, elliptocytesQuantifier: null,
+          otherText: '', otherTextQuantifier: null,
         },
       },
     });
@@ -197,11 +202,11 @@ describe('Golden Tests', () => {
         additional: {
           anisocytosis: true,
           poikilocytosis: true,
-          schistocytes: true,
-          tearDropCells: false,
-          targetCells: false,
-          elliptocytes: false,
-          otherText: '',
+          schistocytes: true, schistocytesQuantifier: null,
+          tearDropCells: false, tearDropCellsQuantifier: null,
+          targetCells: false, targetCellsQuantifier: null,
+          elliptocytes: false, elliptocytesQuantifier: null,
+          otherText: '', otherTextQuantifier: null,
         },
       },
       wbc: {
@@ -272,5 +277,97 @@ describe('Golden Tests', () => {
       nrbc: { increasedNucleatedRbcs: false, reticulocytosis: true },
     });
     expect(renderReport(input)).toBe('Reticulocytosis.');
+  });
+
+  test('Test 16 — Poikilocytosis with single quantifier', () => {
+    const input = emptyInput({
+      hasAbnormalities: true,
+      rbc: {
+        status: null,
+        size: null,
+        chromia: null,
+        additional: {
+          anisocytosis: true,
+          poikilocytosis: true,
+          schistocytes: true, schistocytesQuantifier: 'few',
+          tearDropCells: false, tearDropCellsQuantifier: null,
+          targetCells: false, targetCellsQuantifier: null,
+          elliptocytes: false, elliptocytesQuantifier: null,
+          otherText: '', otherTextQuantifier: null,
+        },
+      },
+    });
+    expect(renderReport(input)).toBe(
+      'Anisopoikilocytosis including few schistocytes.'
+    );
+  });
+
+  test('Test 17 — Poikilocytosis with mixed quantifiers (unqualified first, then by priority)', () => {
+    const input = emptyInput({
+      hasAbnormalities: true,
+      rbc: {
+        status: null,
+        size: null,
+        chromia: null,
+        additional: {
+          anisocytosis: false,
+          poikilocytosis: true,
+          schistocytes: true, schistocytesQuantifier: 'rare',
+          tearDropCells: true, tearDropCellsQuantifier: null,
+          targetCells: false, targetCellsQuantifier: null,
+          elliptocytes: false, elliptocytesQuantifier: null,
+          otherText: '', otherTextQuantifier: null,
+        },
+      },
+    });
+    expect(renderReport(input)).toBe(
+      'Poikilocytosis including tear-drop cells and rare schistocytes.'
+    );
+  });
+
+  test('Test 18 — Anisopoikilocytosis with multiple quantifier groups', () => {
+    const input = emptyInput({
+      hasAbnormalities: true,
+      rbc: {
+        status: null,
+        size: null,
+        chromia: null,
+        additional: {
+          anisocytosis: true,
+          poikilocytosis: true,
+          schistocytes: true, schistocytesQuantifier: 'few',
+          tearDropCells: true, tearDropCellsQuantifier: 'few',
+          targetCells: false, targetCellsQuantifier: null,
+          elliptocytes: true, elliptocytesQuantifier: 'increased',
+          otherText: '', otherTextQuantifier: null,
+        },
+      },
+    });
+    expect(renderReport(input)).toBe(
+      'Anisopoikilocytosis including increased elliptocytes and few schistocytes and tear-drop cells.'
+    );
+  });
+
+  test('Test 19 — Anisopoikilocytosis with unqualified and qualified mixed', () => {
+    const input = emptyInput({
+      hasAbnormalities: true,
+      rbc: {
+        status: null,
+        size: null,
+        chromia: null,
+        additional: {
+          anisocytosis: true,
+          poikilocytosis: true,
+          schistocytes: true, schistocytesQuantifier: null,
+          tearDropCells: false, tearDropCellsQuantifier: null,
+          targetCells: true, targetCellsQuantifier: 'occasional',
+          elliptocytes: false, elliptocytesQuantifier: null,
+          otherText: '', otherTextQuantifier: null,
+        },
+      },
+    });
+    expect(renderReport(input)).toBe(
+      'Anisopoikilocytosis including schistocytes and occasional target cells.'
+    );
   });
 });

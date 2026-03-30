@@ -1,4 +1,4 @@
-import type { RbcGroup as RbcGroupType, RbcStatus, RbcSize, RbcChromia } from '../types';
+import type { RbcGroup as RbcGroupType, RbcStatus, RbcSize, RbcChromia, PoikilocytosisQuantifier } from '../types';
 import type { SessionAction } from '../hooks/useSession';
 
 interface Props {
@@ -24,17 +24,25 @@ const CHROMIA_OPTIONS: { value: RbcChromia; label: string }[] = [
 ];
 
 type AdditionalField = 'anisocytosis' | 'poikilocytosis' | 'schistocytes' | 'tearDropCells' | 'targetCells' | 'elliptocytes';
+type QuantifierField = 'schistocytesQuantifier' | 'tearDropCellsQuantifier' | 'targetCellsQuantifier' | 'elliptocytesQuantifier' | 'otherTextQuantifier';
 
 const PRIMARY_CHECKBOXES: { field: AdditionalField; label: string }[] = [
   { field: 'anisocytosis', label: 'Anisocytosis' },
   { field: 'poikilocytosis', label: 'Poikilocytosis' },
 ];
 
-const POIKILOCYTOSIS_FINDINGS: { field: AdditionalField; label: string }[] = [
-  { field: 'schistocytes', label: 'Schistocytes' },
-  { field: 'tearDropCells', label: 'Tear-drop cells' },
-  { field: 'targetCells', label: 'Target cells' },
-  { field: 'elliptocytes', label: 'Elliptocytes' },
+const POIKILOCYTOSIS_FINDINGS: { field: AdditionalField; label: string; quantifierField: QuantifierField }[] = [
+  { field: 'schistocytes', label: 'Schistocytes', quantifierField: 'schistocytesQuantifier' },
+  { field: 'tearDropCells', label: 'Tear-drop cells', quantifierField: 'tearDropCellsQuantifier' },
+  { field: 'targetCells', label: 'Target cells', quantifierField: 'targetCellsQuantifier' },
+  { field: 'elliptocytes', label: 'Elliptocytes', quantifierField: 'elliptocytesQuantifier' },
+];
+
+const QUANTIFIER_OPTIONS: { value: PoikilocytosisQuantifier; label: string }[] = [
+  { value: 'rare', label: 'Rare' },
+  { value: 'few', label: 'Few' },
+  { value: 'occasional', label: 'Occasional' },
+  { value: 'increased', label: 'Increased' },
 ];
 
 export function RbcGroup({ rbc, dispatch }: Props) {
@@ -132,9 +140,9 @@ export function RbcGroup({ rbc, dispatch }: Props) {
       {rbc.additional.poikilocytosis && (
         <div className="sub-group">
           <label className="sub-label">Poikilocytosis Findings</label>
-          <div className="checkbox-grid">
-            {POIKILOCYTOSIS_FINDINGS.map((cb) => (
-              <label key={cb.field}>
+          {POIKILOCYTOSIS_FINDINGS.map((cb) => (
+            <div key={cb.field} className="poikilocytosis-finding-row">
+              <label>
                 <input
                   type="checkbox"
                   checked={rbc.additional[cb.field] as boolean}
@@ -142,17 +150,59 @@ export function RbcGroup({ rbc, dispatch }: Props) {
                 />
                 {cb.label}
               </label>
-            ))}
-          </div>
-          <div className="field" style={{ marginTop: 12 }}>
+              {rbc.additional[cb.field] && (
+                <div className="quantifier-row">
+                  {QUANTIFIER_OPTIONS.map((q) => (
+                    <label key={q.value} className="quantifier-label">
+                      <input
+                        type="radio"
+                        name={`quantifier-${cb.field}`}
+                        checked={rbc.additional[cb.quantifierField] === q.value}
+                        onChange={() =>
+                          dispatch({ type: 'SET_RBC_QUANTIFIER', field: cb.quantifierField, value: rbc.additional[cb.quantifierField] === q.value ? null : q.value })
+                        }
+                        onClick={() => {
+                          if (rbc.additional[cb.quantifierField] === q.value)
+                            dispatch({ type: 'SET_RBC_QUANTIFIER', field: cb.quantifierField, value: null });
+                        }}
+                      />
+                      {q.label}
+                    </label>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))}
+          <div className="poikilocytosis-finding-row" style={{ marginTop: 12 }}>
             <input
               id="rbc-other"
               type="text"
               value={rbc.additional.otherText}
               onChange={(e) => dispatch({ type: 'SET_RBC_OTHER_TEXT', value: e.target.value })}
               placeholder="Other RBC findings..."
-              style={{ background: 'var(--surface-lowest)', border: 'none', borderRadius: 12, height: 44, padding: '8px 16px' }}
+              style={{ background: 'var(--surface-lowest)', border: 'none', borderRadius: 12, height: 44, padding: '8px 16px', flex: 1 }}
             />
+            {rbc.additional.otherText.trim() && (
+              <div className="quantifier-row">
+                {QUANTIFIER_OPTIONS.map((q) => (
+                  <label key={q.value} className="quantifier-label">
+                    <input
+                      type="radio"
+                      name="quantifier-otherText"
+                      checked={rbc.additional.otherTextQuantifier === q.value}
+                      onChange={() =>
+                        dispatch({ type: 'SET_RBC_QUANTIFIER', field: 'otherTextQuantifier', value: rbc.additional.otherTextQuantifier === q.value ? null : q.value })
+                      }
+                      onClick={() => {
+                        if (rbc.additional.otherTextQuantifier === q.value)
+                          dispatch({ type: 'SET_RBC_QUANTIFIER', field: 'otherTextQuantifier', value: null });
+                      }}
+                    />
+                    {q.label}
+                  </label>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       )}
