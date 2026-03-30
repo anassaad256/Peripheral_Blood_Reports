@@ -96,7 +96,7 @@ describe('Golden Tests', () => {
       },
     });
     expect(renderReport(input)).toBe(
-      'Macrocytic RBCs with anisopoikilocytosis and schistocytes.'
+      'Macrocytic RBCs with anisopoikilocytosis including schistocytes.'
     );
   });
 
@@ -221,7 +221,7 @@ describe('Golden Tests', () => {
       'Case ID: PBS-26-1042',
       'Signing pathologist: Anas Saad, MD',
       '',
-      'Macrocytic RBCs with anisopoikilocytosis and schistocytes.',
+      'Macrocytic RBCs with anisopoikilocytosis including schistocytes.',
       'Leukocytosis with neutrophilia and absolute lymphopenia.',
       'Thrombocytopenia with large platelets.',
       '',

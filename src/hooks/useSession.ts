@@ -159,11 +159,17 @@ function sessionReducer(state: Session, action: SessionAction): Session {
       return updateActiveCase(state, (c) => ({ ...c, rbc: { ...c.rbc, size: action.value } }));
     case 'SET_RBC_CHROMIA':
       return updateActiveCase(state, (c) => ({ ...c, rbc: { ...c.rbc, chromia: action.value } }));
-    case 'TOGGLE_RBC_ADDITIONAL':
-      return updateActiveCase(state, (c) => ({
-        ...c,
-        rbc: { ...c.rbc, additional: { ...c.rbc.additional, [action.field]: !c.rbc.additional[action.field] } },
-      }));
+    case 'TOGGLE_RBC_ADDITIONAL': {
+      return updateActiveCase(state, (c) => {
+        const toggled = !c.rbc.additional[action.field];
+        let additional = { ...c.rbc.additional, [action.field]: toggled };
+        // When poikilocytosis is turned off, clear the sub-findings it gates
+        if (action.field === 'poikilocytosis' && !toggled) {
+          additional = { ...additional, schistocytes: false, tearDropCells: false, targetCells: false, elliptocytes: false, otherText: '' };
+        }
+        return { ...c, rbc: { ...c.rbc, additional } };
+      });
+    }
     case 'SET_RBC_OTHER_TEXT':
       return updateActiveCase(state, (c) => ({
         ...c,
