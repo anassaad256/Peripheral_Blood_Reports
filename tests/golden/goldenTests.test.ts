@@ -370,4 +370,27 @@ describe('Golden Tests', () => {
       'Anisopoikilocytosis including schistocytes and occasional target cells.'
     );
   });
+
+  test('Test 20 — Three quantifier groups use comma separation', () => {
+    const input = emptyInput({
+      hasAbnormalities: true,
+      rbc: {
+        status: null,
+        size: null,
+        chromia: null,
+        additional: {
+          anisocytosis: false,
+          poikilocytosis: true,
+          schistocytes: true, schistocytesQuantifier: 'rare',
+          tearDropCells: true, tearDropCellsQuantifier: 'increased',
+          targetCells: true, targetCellsQuantifier: 'few',
+          elliptocytes: false, elliptocytesQuantifier: null,
+          otherText: '', otherTextQuantifier: null,
+        },
+      },
+    });
+    expect(renderReport(input)).toBe(
+      'Poikilocytosis including increased tear-drop cells, few target cells, and rare schistocytes.'
+    );
+  });
 });

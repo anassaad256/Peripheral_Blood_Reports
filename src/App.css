@@ -342,10 +342,16 @@
 /* ── Poikilocytosis finding rows ──────────────── */
 .poikilocytosis-finding-row {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  align-items: center;
+  gap: 12px;
   padding: 8px 12px;
   border-radius: 10px;
+  background: var(--surface-low);
+  transition: all 0.15s;
+}
+
+.poikilocytosis-finding-row:hover {
+  background: var(--surface-lowest);
 }
 
 .poikilocytosis-finding-row label {
@@ -365,7 +371,7 @@
 .quantifier-row {
   display: flex;
   gap: 12px;
-  padding-left: 26px;
+  margin-left: auto;
 }
 
 .quantifier-label {
