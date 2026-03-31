@@ -4,9 +4,10 @@ import type { SessionAction } from '../hooks/useSession';
 interface Props {
   session: Session;
   dispatch: React.Dispatch<SessionAction>;
+  onStartNewSession: () => void;
 }
 
-export function SessionSummary({ session, dispatch }: Props) {
+export function SessionSummary({ session, dispatch, onStartNewSession }: Props) {
   const casesWithReports = session.cases.filter((c) => c.generatedReport);
 
   function handlePrint() {
@@ -81,6 +82,14 @@ export function SessionSummary({ session, dispatch }: Props) {
           >
             <span className="material-symbols-outlined" style={{ fontSize: 18 }}>print</span>
             Print Report
+          </button>
+          <button
+            type="button"
+            className="btn-new-session"
+            onClick={onStartNewSession}
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: 18 }}>restart_alt</span>
+            Start New Session
           </button>
         </div>
       </div>

@@ -3,12 +3,19 @@ import { SessionSetup } from './SessionSetup';
 import { CaseSidebar } from './CaseSidebar';
 import { CaseEditor } from './CaseEditor';
 import { SessionSummary } from './SessionSummary';
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 
 export function SessionManager() {
   const { state, dispatch, clearSaved } = useSession();
   const [showResumePrompt, setShowResumePrompt] = useState(() => hasSavedSession());
   const [promptDismissed, setPromptDismissed] = useState(false);
+
+  const handleStartNewSession = useCallback(() => {
+    clearSaved();
+    dispatch({ type: 'START_NEW_SESSION' });
+    setShowResumePrompt(false);
+    setPromptDismissed(true);
+  }, [clearSaved, dispatch]);
 
   // Show resume prompt on first load if saved session exists
   if (showResumePrompt && !promptDismissed) {
@@ -33,12 +40,7 @@ export function SessionManager() {
             <button
               type="button"
               className="btn-reset"
-              onClick={() => {
-                clearSaved();
-                dispatch({ type: 'START_NEW_SESSION' });
-                setShowResumePrompt(false);
-                setPromptDismissed(true);
-              }}
+              onClick={handleStartNewSession}
             >
               Start New Session
             </button>
@@ -49,7 +51,7 @@ export function SessionManager() {
   }
 
   if (state.view === 'summary') {
-    return <SessionSummary session={state} dispatch={dispatch} />;
+    return <SessionSummary session={state} dispatch={dispatch} onStartNewSession={handleStartNewSession} />;
   }
 
   return (
@@ -58,6 +60,7 @@ export function SessionManager() {
         cases={state.cases}
         activeCaseIndex={state.activeCaseIndex}
         dispatch={dispatch}
+        onStartNewSession={handleStartNewSession}
       />
       <div className="session-main">
         <SessionSetup metadata={state.metadata} dispatch={dispatch} />
