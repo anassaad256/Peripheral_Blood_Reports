@@ -1167,6 +1167,9 @@
   margin-top: 12px;
   padding-top: 12px;
   border-top: 1px solid var(--outline-variant);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .btn-end-session {
@@ -1188,6 +1191,27 @@
 
 .btn-end-session:hover {
   background: rgba(0, 99, 152, 0.04);
+}
+
+.btn-new-session {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 10px 12px;
+  border: 1px solid var(--outline-variant);
+  background: none;
+  color: var(--text-secondary);
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-new-session:hover {
+  background: var(--surface-lowest);
+  color: var(--text-primary);
 }
 
 /* ── Add to Report button ─────────────────────── */

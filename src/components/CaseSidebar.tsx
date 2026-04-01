@@ -1,3 +1,4 @@
+import { useRef, useEffect } from 'react';
 import type { CaseData } from '../types';
 import type { SessionAction } from '../hooks/useSession';
 
@@ -5,9 +6,21 @@ interface Props {
   cases: CaseData[];
   activeCaseIndex: number;
   dispatch: React.Dispatch<SessionAction>;
+  onStartNewSession: () => void;
 }
 
-export function CaseSidebar({ cases, activeCaseIndex, dispatch }: Props) {
+export function CaseSidebar({ cases, activeCaseIndex, dispatch, onStartNewSession }: Props) {
+  const listRef = useRef<HTMLUListElement>(null);
+  const prevCountRef = useRef(cases.length);
+
+  // Auto-scroll to bottom when a new case is added
+  useEffect(() => {
+    if (cases.length > prevCountRef.current && listRef.current) {
+      listRef.current.scrollTop = listRef.current.scrollHeight;
+    }
+    prevCountRef.current = cases.length;
+  }, [cases.length]);
+
   return (
     <aside className="case-sidebar">
       <div className="sidebar-header">
@@ -22,7 +35,7 @@ export function CaseSidebar({ cases, activeCaseIndex, dispatch }: Props) {
         </button>
       </div>
 
-      <ul className="case-list">
+      <ul className="case-list" ref={listRef}>
         {cases.map((c, i) => (
           <li
             key={c.id}
@@ -64,6 +77,14 @@ export function CaseSidebar({ cases, activeCaseIndex, dispatch }: Props) {
         >
           <span className="material-symbols-outlined" style={{ fontSize: 18 }}>summarize</span>
           End Session &amp; Generate Report
+        </button>
+        <button
+          type="button"
+          className="btn-new-session"
+          onClick={onStartNewSession}
+        >
+          <span className="material-symbols-outlined" style={{ fontSize: 18 }}>restart_alt</span>
+          Start New Session
         </button>
       </div>
     </aside>
