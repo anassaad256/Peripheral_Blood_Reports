@@ -9,13 +9,18 @@ export function SessionManager() {
   const { state, dispatch, clearSaved } = useSession();
   const [showResumePrompt, setShowResumePrompt] = useState(() => hasSavedSession());
   const [promptDismissed, setPromptDismissed] = useState(false);
+  const [showNewSessionConfirm, setShowNewSessionConfirm] = useState(false);
 
-  const handleStartNewSession = useCallback(() => {
-    if (!window.confirm('Start a new session? All unsaved data will be lost.')) return;
+  const requestNewSession = useCallback(() => {
+    setShowNewSessionConfirm(true);
+  }, []);
+
+  const confirmNewSession = useCallback(() => {
     clearSaved();
     dispatch({ type: 'START_NEW_SESSION' });
     setShowResumePrompt(false);
     setPromptDismissed(true);
+    setShowNewSessionConfirm(false);
   }, [clearSaved, dispatch]);
 
   // Show resume prompt on first load if saved session exists
@@ -41,7 +46,7 @@ export function SessionManager() {
             <button
               type="button"
               className="btn-reset"
-              onClick={handleStartNewSession}
+              onClick={confirmNewSession}
             >
               Start New Session
             </button>
@@ -51,22 +56,58 @@ export function SessionManager() {
     );
   }
 
+  const confirmModal = showNewSessionConfirm && (
+    <div className="confirm-overlay" onClick={() => setShowNewSessionConfirm(false)}>
+      <div className="confirm-card" onClick={(e) => e.stopPropagation()}>
+        <div className="confirm-icon">
+          <span className="material-symbols-outlined" style={{ fontSize: 36 }}>warning</span>
+        </div>
+        <h2>Start New Session?</h2>
+        <p>All current session data will be lost. This cannot be undone.</p>
+        <div className="confirm-actions">
+          <button
+            type="button"
+            className="btn-confirm-cancel"
+            onClick={() => setShowNewSessionConfirm(false)}
+          >
+            Cancel
+          </button>
+          <button
+            type="button"
+            className="btn-confirm-destroy"
+            onClick={confirmNewSession}
+          >
+            Start New Session
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
   if (state.view === 'summary') {
-    return <SessionSummary session={state} dispatch={dispatch} onStartNewSession={handleStartNewSession} />;
+    return (
+      <>
+        <SessionSummary session={state} dispatch={dispatch} onStartNewSession={requestNewSession} />
+        {confirmModal}
+      </>
+    );
   }
 
   return (
-    <div className="session-layout">
-      <CaseSidebar
-        cases={state.cases}
-        activeCaseIndex={state.activeCaseIndex}
-        dispatch={dispatch}
-        onStartNewSession={handleStartNewSession}
-      />
-      <div className="session-main">
-        <SessionSetup metadata={state.metadata} dispatch={dispatch} />
-        <CaseEditor session={state} dispatch={dispatch} />
+    <>
+      <div className="session-layout">
+        <CaseSidebar
+          cases={state.cases}
+          activeCaseIndex={state.activeCaseIndex}
+          dispatch={dispatch}
+          onStartNewSession={requestNewSession}
+        />
+        <div className="session-main">
+          <SessionSetup metadata={state.metadata} dispatch={dispatch} />
+          <CaseEditor session={state} dispatch={dispatch} />
+        </div>
       </div>
-    </div>
+      {confirmModal}
+    </>
   );
 }
