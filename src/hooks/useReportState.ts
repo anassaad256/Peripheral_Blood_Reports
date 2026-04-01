@@ -23,7 +23,7 @@ export type ReportAction =
   | { type: 'SET_RBC_CHROMIA'; value: RbcChromia }
   | { type: 'TOGGLE_RBC_ADDITIONAL'; field: 'anisocytosis' | 'poikilocytosis' | 'schistocytes' | 'tearDropCells' | 'targetCells' | 'elliptocytes' }
   | { type: 'SET_RBC_OTHER_TEXT'; value: string }
-  | { type: 'TOGGLE_NRBC_INCREASED' }
+  | { type: 'TOGGLE_NUCLEATED_RBCS' }
   | { type: 'TOGGLE_RETICULOCYTOSIS' }
   | { type: 'SET_WBC_COUNT'; value: WbcCountCategory }
   | { type: 'TOGGLE_DIFFERENTIAL'; diffType: DifferentialType }
@@ -62,7 +62,7 @@ export function createInitialState(): ReportInput {
         otherTextQuantifier: null,
       },
     },
-    nrbc: { increasedNucleatedRbcs: false, reticulocytosis: false },
+    nrbc: { nucleatedRbcs: false, nucleatedRbcsQuantifier: null, reticulocytosis: false },
     wbc: { countCategory: null, leftShift: false, differentials: [] },
     abnormalPopulations: { entries: [] },
     platelets: { count: null, largePlatelets: false, plateletClumps: false },
@@ -128,10 +128,10 @@ function reportReducer(state: ReportInput, action: ReportAction): ReportInput {
         },
       };
 
-    case 'TOGGLE_NRBC_INCREASED':
+    case 'TOGGLE_NUCLEATED_RBCS':
       return {
         ...state,
-        nrbc: { ...state.nrbc, increasedNucleatedRbcs: !state.nrbc.increasedNucleatedRbcs },
+        nrbc: { ...state.nrbc, nucleatedRbcs: !state.nrbc.nucleatedRbcs, nucleatedRbcsQuantifier: !state.nrbc.nucleatedRbcs ? state.nrbc.nucleatedRbcsQuantifier : null },
       };
     case 'TOGGLE_RETICULOCYTOSIS':
       return {

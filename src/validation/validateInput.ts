@@ -28,7 +28,7 @@ function hasValidRbc(input: ReportInput): boolean {
 }
 
 function hasValidNrbc(input: ReportInput): boolean {
-  return input.nrbc.increasedNucleatedRbcs || input.nrbc.reticulocytosis;
+  return input.nrbc.nucleatedRbcs || input.nrbc.reticulocytosis;
 }
 
 function hasValidWbc(input: ReportInput): boolean {
