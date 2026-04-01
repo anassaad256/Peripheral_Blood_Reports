@@ -11,6 +11,7 @@ export function SessionManager() {
   const [promptDismissed, setPromptDismissed] = useState(false);
 
   const handleStartNewSession = useCallback(() => {
+    if (!window.confirm('Start a new session? All unsaved data will be lost.')) return;
     clearSaved();
     dispatch({ type: 'START_NEW_SESSION' });
     setShowResumePrompt(false);
