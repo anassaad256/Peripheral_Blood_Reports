@@ -1,4 +1,7 @@
+export type NrbcQuantifier = 'few' | 'increased' | null;
+
 export interface NrbcGroup {
-  increasedNucleatedRbcs: boolean;
+  nucleatedRbcs: boolean;
+  nucleatedRbcsQuantifier: NrbcQuantifier;
   reticulocytosis: boolean;
 }

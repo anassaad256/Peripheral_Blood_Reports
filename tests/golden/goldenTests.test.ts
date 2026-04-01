@@ -25,7 +25,7 @@ function emptyInput(overrides: Partial<ReportInput> = {}): ReportInput {
         otherTextQuantifier: null,
       },
     },
-    nrbc: { increasedNucleatedRbcs: false, reticulocytosis: false },
+    nrbc: { nucleatedRbcs: false, nucleatedRbcsQuantifier: null, reticulocytosis: false },
     wbc: { countCategory: null, leftShift: false, differentials: [] },
     abnormalPopulations: { entries: [] },
     platelets: { count: null, largePlatelets: false, plateletClumps: false },
@@ -147,7 +147,7 @@ describe('Golden Tests', () => {
   test('Test 8 — Increased nucleated RBCs and reticulocytosis', () => {
     const input = emptyInput({
       hasAbnormalities: true,
-      nrbc: { increasedNucleatedRbcs: true, reticulocytosis: true },
+      nrbc: { nucleatedRbcs: true, nucleatedRbcsQuantifier: 'increased', reticulocytosis: true },
     });
     expect(renderReport(input)).toBe('Increased nucleated RBCs and reticulocytosis.');
   });
@@ -274,7 +274,7 @@ describe('Golden Tests', () => {
   test('Test 15 — NRBC reticulocytosis only', () => {
     const input = emptyInput({
       hasAbnormalities: true,
-      nrbc: { increasedNucleatedRbcs: false, reticulocytosis: true },
+      nrbc: { nucleatedRbcs: false, nucleatedRbcsQuantifier: null, reticulocytosis: true },
     });
     expect(renderReport(input)).toBe('Reticulocytosis.');
   });
@@ -392,5 +392,29 @@ describe('Golden Tests', () => {
     expect(renderReport(input)).toBe(
       'Poikilocytosis including increased tear-drop cells, few target cells, and rare schistocytes.'
     );
+  });
+
+  test('Test 21 — Nucleated RBCs without quantifier', () => {
+    const input = emptyInput({
+      hasAbnormalities: true,
+      nrbc: { nucleatedRbcs: true, nucleatedRbcsQuantifier: null, reticulocytosis: false },
+    });
+    expect(renderReport(input)).toBe('Nucleated RBCs seen.');
+  });
+
+  test('Test 22 — Few nucleated RBCs', () => {
+    const input = emptyInput({
+      hasAbnormalities: true,
+      nrbc: { nucleatedRbcs: true, nucleatedRbcsQuantifier: 'few', reticulocytosis: false },
+    });
+    expect(renderReport(input)).toBe('Few nucleated RBCs.');
+  });
+
+  test('Test 23 — Few nucleated RBCs and reticulocytosis', () => {
+    const input = emptyInput({
+      hasAbnormalities: true,
+      nrbc: { nucleatedRbcs: true, nucleatedRbcsQuantifier: 'few', reticulocytosis: true },
+    });
+    expect(renderReport(input)).toBe('Few nucleated RBCs and reticulocytosis.');
   });
 });

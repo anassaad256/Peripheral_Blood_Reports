@@ -3,7 +3,13 @@ import { formatLine } from './textUtils';
 
 export function renderNrbc(nrbc: NrbcGroup): string {
   const items: string[] = [];
-  if (nrbc.increasedNucleatedRbcs) items.push('increased nucleated RBCs');
+  if (nrbc.nucleatedRbcs) {
+    if (nrbc.nucleatedRbcsQuantifier) {
+      items.push(`${nrbc.nucleatedRbcsQuantifier} nucleated RBCs`);
+    } else {
+      items.push('nucleated RBCs seen');
+    }
+  }
   if (nrbc.reticulocytosis) items.push('reticulocytosis');
 
   if (items.length === 0) return '';

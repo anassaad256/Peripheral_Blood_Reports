@@ -1,7 +1,7 @@
 import { useReducer, useEffect, useCallback } from 'react';
 import type { Session, CaseData } from '../types';
 import type {
-  RbcStatus, RbcSize, RbcChromia, PoikilocytosisQuantifier,
+  RbcStatus, RbcSize, RbcChromia, PoikilocytosisQuantifier, NrbcQuantifier,
   WbcCountCategory, DifferentialType, PlateletCount,
   InterpretationKey, AmountType, NeutrophilMorphology,
 } from '../types';
@@ -21,7 +21,7 @@ export function createEmptyCase(): CaseData {
       status: null, size: null, chromia: null,
       additional: { anisocytosis: false, poikilocytosis: false, schistocytes: false, schistocytesQuantifier: null, tearDropCells: false, tearDropCellsQuantifier: null, targetCells: false, targetCellsQuantifier: null, elliptocytes: false, elliptocytesQuantifier: null, otherText: '', otherTextQuantifier: null },
     },
-    nrbc: { increasedNucleatedRbcs: false, reticulocytosis: false },
+    nrbc: { nucleatedRbcs: false, nucleatedRbcsQuantifier: null, reticulocytosis: false },
     wbc: { countCategory: null, leftShift: false, differentials: [] },
     abnormalPopulations: { entries: [] },
     platelets: { count: null, largePlatelets: false, plateletClumps: false },
@@ -68,7 +68,8 @@ export type SessionAction =
   | { type: 'TOGGLE_RBC_ADDITIONAL'; field: 'anisocytosis' | 'poikilocytosis' | 'schistocytes' | 'tearDropCells' | 'targetCells' | 'elliptocytes' }
   | { type: 'SET_RBC_QUANTIFIER'; field: 'schistocytesQuantifier' | 'tearDropCellsQuantifier' | 'targetCellsQuantifier' | 'elliptocytesQuantifier' | 'otherTextQuantifier'; value: PoikilocytosisQuantifier }
   | { type: 'SET_RBC_OTHER_TEXT'; value: string }
-  | { type: 'TOGGLE_NRBC_INCREASED' }
+  | { type: 'TOGGLE_NUCLEATED_RBCS' }
+  | { type: 'SET_NRBC_QUANTIFIER'; value: NrbcQuantifier }
   | { type: 'TOGGLE_RETICULOCYTOSIS' }
   | { type: 'TOGGLE_WBC_LEFT_SHIFT' }
   | { type: 'SET_WBC_COUNT'; value: WbcCountCategory }
@@ -187,9 +188,15 @@ function sessionReducer(state: Session, action: SessionAction): Session {
       }));
 
     // NRBC
-    case 'TOGGLE_NRBC_INCREASED':
+    case 'TOGGLE_NUCLEATED_RBCS': {
+      return updateActiveCase(state, (c) => {
+        const toggled = !c.nrbc.nucleatedRbcs;
+        return { ...c, nrbc: { ...c.nrbc, nucleatedRbcs: toggled, nucleatedRbcsQuantifier: toggled ? c.nrbc.nucleatedRbcsQuantifier : null } };
+      });
+    }
+    case 'SET_NRBC_QUANTIFIER':
       return updateActiveCase(state, (c) => ({
-        ...c, nrbc: { ...c.nrbc, increasedNucleatedRbcs: !c.nrbc.increasedNucleatedRbcs },
+        ...c, nrbc: { ...c.nrbc, nucleatedRbcsQuantifier: action.value },
       }));
     case 'TOGGLE_RETICULOCYTOSIS':
       return updateActiveCase(state, (c) => ({

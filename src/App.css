@@ -535,6 +535,34 @@
   height: 16px;
 }
 
+.nrbc-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--surface-lowest);
+  border-radius: 12px;
+  transition: all 0.15s;
+}
+
+.nrbc-controls:hover {
+  box-shadow: var(--shadow-sm);
+}
+
+.nrbc-controls label {
+  padding: 0;
+  background: none;
+  border-radius: 0;
+}
+
+.nrbc-controls label:hover {
+  box-shadow: none;
+}
+
+.nrbc-controls .poik-pills {
+  margin-left: auto;
+}
+
 /* ── WBC differential rows ───────────────────── */
 .differential-row {
   margin-bottom: 8px;
