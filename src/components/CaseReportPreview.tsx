@@ -4,10 +4,11 @@ interface Props {
   text: string;
   onTextChange: (text: string) => void;
   onAddToReport: () => void;
+  onAddNewCase: () => void;
   isAdded: boolean;
 }
 
-export function CaseReportPreview({ text, onTextChange, onAddToReport, isAdded }: Props) {
+export function CaseReportPreview({ text, onTextChange, onAddToReport, onAddNewCase, isAdded }: Props) {
   const [copied, setCopied] = useState(false);
 
   function handleCopy() {
@@ -43,6 +44,16 @@ export function CaseReportPreview({ text, onTextChange, onAddToReport, isAdded }
           </span>
           {isAdded ? 'Added to Report' : 'Add to Report'}
         </button>
+        {isAdded && (
+          <button
+            type="button"
+            className="btn-add-report"
+            onClick={onAddNewCase}
+          >
+            <span className="material-symbols-outlined" style={{ fontSize: 16 }}>add</span>
+            New Case
+          </button>
+        )}
       </div>
     </div>
   );
