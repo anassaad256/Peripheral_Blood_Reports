@@ -118,6 +118,7 @@ export function CaseEditor({ session, dispatch }: Props) {
             text={previewText}
             onTextChange={setPreviewText}
             onAddToReport={handleAddToReport}
+            onAddNewCase={() => dispatch({ type: 'ADD_CASE' })}
             isAdded={activeCase.generatedReport === previewText}
           />
         )}
