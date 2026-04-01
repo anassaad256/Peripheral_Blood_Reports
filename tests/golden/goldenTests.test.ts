@@ -417,4 +417,12 @@ describe('Golden Tests', () => {
     });
     expect(renderReport(input)).toBe('Few nucleated RBCs and reticulocytosis.');
   });
+
+  test('Test 24 — Nucleated RBCs seen with reticulocytosis (no quantifier)', () => {
+    const input = emptyInput({
+      hasAbnormalities: true,
+      nrbc: { nucleatedRbcs: true, nucleatedRbcsQuantifier: null, reticulocytosis: true },
+    });
+    expect(renderReport(input)).toBe('Nucleated RBCs seen with reticulocytosis.');
+  });
 });

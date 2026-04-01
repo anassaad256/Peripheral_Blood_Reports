@@ -13,5 +13,8 @@ export function renderNrbc(nrbc: NrbcGroup): string {
   if (nrbc.reticulocytosis) items.push('reticulocytosis');
 
   if (items.length === 0) return '';
+  if (nrbc.nucleatedRbcs && nrbc.reticulocytosis && !nrbc.nucleatedRbcsQuantifier) {
+    return formatLine('nucleated RBCs seen with reticulocytosis');
+  }
   return formatLine(items.join(' and '));
 }
